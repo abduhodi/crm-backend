@@ -10,6 +10,8 @@ import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { DirectorModule } from './director/director.module';
 import { AdminsModule } from './admins/admins.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,6 +19,10 @@ import { AdminsModule } from './admins/admins.module';
     MongooseModule.forRoot(process.env.MONGO_URI),
     JwtModule.register({
       global: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'data'),
+      exclude: ['index.html'],
     }),
     UsersModule,
     AdminsModule,

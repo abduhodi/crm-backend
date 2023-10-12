@@ -12,8 +12,10 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiProperty,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -25,6 +27,7 @@ import { ROLE } from '../enums/role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SelfGuard } from '../guards/self.guard';
+import { FileUploadDto } from '../users/dto/file-upload.dto';
 
 @Controller('admin')
 @ApiTags('Admins')
@@ -45,7 +48,8 @@ export class AdminsController {
   @UseInterceptors(FileInterceptor('image'))
   createTeacher(
     @Body() createUserDto: CreateUserDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile()
+    image: Express.Multer.File,
   ) {
     return this.adminsService.createTeacher(createUserDto, image);
   }

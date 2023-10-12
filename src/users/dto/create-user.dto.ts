@@ -25,4 +25,7 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Phone number should not be empty' })
   phone: string;
+
+  @ApiProperty({ type: 'string', format: 'binary' })
+  image: any;
 }
