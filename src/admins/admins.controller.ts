@@ -59,15 +59,15 @@ export class AdminsController {
     status: HttpStatus.CREATED,
     description: 'succesfully added',
   })
-  @ApiConsumes('multipart/form-data')
+  // @ApiConsumes('multipart/form-data')
   @Post('add-student')
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('image'))
+  // @UseInterceptors(FileInterceptor('image'))
   createStudent(
     @Body() createUserDto: CreateUserDto,
-    @UploadedFile() image: Express.Multer.File,
+    // @UploadedFile() image: Express.Multer.File,
   ) {
-    return this.adminsService.createStudent(createUserDto, image);
+    return this.adminsService.createStudent(createUserDto);
   }
 
   @ApiOperation({ summary: 'Get all Students' })

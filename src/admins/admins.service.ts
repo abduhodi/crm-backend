@@ -34,16 +34,16 @@ export class AdminService {
 
   async createStudent(
     createUserDto: CreateUserDto,
-    image: Express.Multer.File,
+    // image: Express.Multer.File,
   ) {
     const user = await this.userModel.findOne({ phone: createUserDto.phone });
     if (user)
       throw new BadRequestException('Phone number is already registered');
-    const filename = await uploadFile(image);
+    // const filename = await uploadFile(image);
     return this.userModel.create({
       ...createUserDto,
       role: 'student',
-      image: filename,
+      image: '',
       password: bcrypt.hashSync(createUserDto.phone, 7),
     });
   }
