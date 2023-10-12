@@ -75,10 +75,10 @@ export class AdminsController {
     status: HttpStatus.OK,
     description: 'succesfully generated',
   })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Students are not found',
-  })
+  // @ApiResponse({
+  //   status: HttpStatus.NOT_FOUND,
+  //   description: 'Students are not found',
+  // })
   @Get('get-students')
   @HttpCode(HttpStatus.OK)
   findAllStudents() {
@@ -90,10 +90,10 @@ export class AdminsController {
     status: HttpStatus.OK,
     description: 'succesfully generated',
   })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Teachers are not found',
-  })
+  // @ApiResponse({
+  //   status: HttpStatus.NOT_FOUND,
+  //   description: 'Teachers are not found',
+  // })
   @Get('get-teachers')
   @HttpCode(HttpStatus.OK)
   findAllTeachers() {
