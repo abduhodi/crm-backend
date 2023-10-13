@@ -57,6 +57,23 @@ export class DirectorController {
     return this.directorService.activateAdmin(id);
   }
 
+  @ApiOperation({ summary: 'Add new Teacher' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'succesfully added',
+  })
+  @ApiConsumes('multipart/form-data')
+  @Post('add-teacher')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('image'))
+  createTeacher(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile()
+    image: Express.Multer.File,
+  ) {
+    return this.directorService.createTeacher(createUserDto, image);
+  }
+
   @ApiOperation({ summary: 'Get all Students' })
   @ApiResponse({
     status: HttpStatus.OK,

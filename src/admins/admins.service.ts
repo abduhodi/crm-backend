@@ -1,5 +1,8 @@
 import {
   BadRequestException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,56 +14,61 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../users/schemas/user.schema';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class AdminService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async createTeacher(
-    createUserDto: CreateUserDto,
-    image: Express.Multer.File,
-  ) {
-    const user = await this.userModel.findOne({ phone: createUserDto.phone });
-    if (user)
-      throw new BadRequestException('Phone number is already registered');
-    const filename = await uploadFile(image);
-    return this.userModel.create({
-      ...createUserDto,
-      role: 'teacher',
-      image: filename,
-      password: bcrypt.hashSync(createUserDto.phone, 7),
-    });
-  }
+  //----------------------- ADD NEW STUDENT -----------------------------//
 
-  async createStudent(
-    createUserDto: CreateUserDto,
-    // image: Express.Multer.File,
-  ) {
+  async createStudent(createUserDto: CreateUserDto) {
     const user = await this.userModel.findOne({ phone: createUserDto.phone });
     if (user)
       throw new BadRequestException('Phone number is already registered');
-    // const filename = await uploadFile(image);
-    return this.userModel.create({
+
+    const lastId: number[] = await this.userModel
+      .aggregate()
+      .group({ _id: null, last: { $max: '$id' } })
+      .project(['-_id last'])
+      .exec();
+
+    console.log(lastId);
+    if (!lastId.length) {
+      lastId[0] = 1;
+    }
+
+    const newUser = await this.userModel.create({
+      id: lastId[0] + 1,
       ...createUserDto,
       role: 'student',
       image: '',
       password: bcrypt.hashSync(createUserDto.phone, 7),
     });
+    return {
+      message: 'Success',
+      user: {
+        id: newUser.id,
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        phone: newUser.phone,
+        role: newUser.role,
+        status: newUser.status,
+        payment_status: '',
+      },
+    };
   }
 
-  async findAllStudents() {
+  async findAllStudents(res: Response) {
     const users = await this.userModel.find({ role: 'student' });
-    // if (!users.length) {
-    //   throw new NotFoundException('Students are not found');
-    // }
+    if (!users.length) {
+      res.status(HttpStatus.NO_CONTENT);
+    }
     return { students: users };
   }
 
   async findAllTeachers() {
     const users = await this.userModel.find({ role: 'teacher' });
-    // if (!users.length) {
-    //   throw new NotFoundException('Teachers are not found');
-    // }
     return { students: users };
   }
 
@@ -71,7 +79,7 @@ export class AdminService {
     }
     const user = await this.userModel.findOne({ id, role: 'admin' });
     if (!user) {
-      throw new NotFoundException('Admin is not found');
+      throw new HttpException('Admin is not found', HttpStatus.NO_CONTENT);
     }
     return { admin: user };
   }
@@ -94,9 +102,9 @@ export class AdminService {
       throw new BadRequestException('Invalid id');
     }
     const user = await this.userModel.findOne({ id, role: 'teacher' });
-    // if (!user) {
-    //   throw new NotFoundException('Teacher is not found');
-    // }
+    if (!user) {
+      throw new HttpException('Teacher is not found', HttpStatus.NO_CONTENT);
+    }
     return { teacher: user };
   }
 
@@ -112,14 +120,14 @@ export class AdminService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async updateStudent(id: string, updateUserDto: UpdateUserDto) {
     const valid = isValidObjectId(id);
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
     const user = await this.userModel.findById(id);
     if (!user) {
-      throw new NotFoundException('User is not found');
+      throw new BadRequestException('Student is not found');
     }
     await user.updateOne(updateUserDto);
     const updatedUser = await this.userModel.findById(id);

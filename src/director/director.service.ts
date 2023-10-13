@@ -15,6 +15,22 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 export class DirectorService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
+  async createTeacher(
+    createUserDto: CreateUserDto,
+    image: Express.Multer.File,
+  ) {
+    const user = await this.userModel.findOne({ phone: createUserDto.phone });
+    if (user)
+      throw new BadRequestException('Phone number is already registered');
+    const filename = await uploadFile(image);
+    return this.userModel.create({
+      ...createUserDto,
+      role: 'teacher',
+      image: filename,
+      password: bcrypt.hashSync(createUserDto.phone, 7),
+    });
+  }
+
   async createAdmin(createUserDto: CreateUserDto) {
     const user = await this.userModel.findOne({ phone: createUserDto.phone });
     if (user)

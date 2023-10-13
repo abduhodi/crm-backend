@@ -9,6 +9,7 @@ import {
   UploadedFile,
   Get,
   Param,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SelfGuard } from '../guards/self.guard';
 import { FileUploadDto } from '../users/dto/file-upload.dto';
+import { Response } from 'express';
 
 @Controller('admin')
 @ApiTags('Admins')
@@ -37,68 +39,102 @@ import { FileUploadDto } from '../users/dto/file-upload.dto';
 export class AdminsController {
   constructor(private readonly adminsService: AdminService) {}
 
-  @ApiOperation({ summary: 'Add new Teacher' })
+  //-------------- UPDATE STUDENT --------------------//
+
+  @ApiOperation({ summary: 'Update Student' })
   @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'succesfully added',
+    status: HttpStatus.ACCEPTED,
+    description: 'succesfully updated',
   })
-  @ApiConsumes('multipart/form-data')
-  @Post('add-teacher')
-  @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('image'))
-  createTeacher(
-    @Body() createUserDto: CreateUserDto,
-    @UploadedFile()
-    image: Express.Multer.File,
-  ) {
-    return this.adminsService.createTeacher(createUserDto, image);
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Student is not found or invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Post('update-student/:id')
+  @HttpCode(HttpStatus.ACCEPTED)
+  updateStudent(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
+    return this.adminsService.updateStudent(id, createUserDto);
   }
+  //-------------- ADD NEW STUDENT --------------------//
 
   @ApiOperation({ summary: 'Add new Student' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'succesfully added',
   })
-  // @ApiConsumes('multipart/form-data')
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
   @Post('add-student')
   @HttpCode(HttpStatus.CREATED)
-  // @UseInterceptors(FileInterceptor('image'))
-  createStudent(
-    @Body() createUserDto: CreateUserDto,
-    // @UploadedFile() image: Express.Multer.File,
-  ) {
+  createStudent(@Body() createUserDto: CreateUserDto) {
     return this.adminsService.createStudent(createUserDto);
   }
+
+  //-------------- GET ALL STUDENTS --------------------//
 
   @ApiOperation({ summary: 'Get all Students' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'succesfully generated',
   })
-  // @ApiResponse({
-  //   status: HttpStatus.NOT_FOUND,
-  //   description: 'Students are not found',
-  // })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'students list is empty',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
   @Get('get-students')
   @HttpCode(HttpStatus.OK)
-  findAllStudents() {
-    return this.adminsService.findAllStudents();
+  findAllStudents(@Res({ passthrough: true }) res: Response) {
+    return this.adminsService.findAllStudents(res);
   }
+
+  //-------------- GET ALL TEACHERS --------------------//
 
   @ApiOperation({ summary: 'Get all Teachers' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'succesfully generated',
   })
-  // @ApiResponse({
-  //   status: HttpStatus.NOT_FOUND,
-  //   description: 'Teachers are not found',
-  // })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'teachers list is empty',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
   @Get('get-teachers')
   @HttpCode(HttpStatus.OK)
   findAllTeachers() {
     return this.adminsService.findAllTeachers();
   }
+
+  //-------------- GET ADMIN BY ID --------------------//
 
   @UseGuards(SelfGuard)
   @ApiOperation({ summary: 'Get Admin by id' })
@@ -107,8 +143,16 @@ export class AdminsController {
     description: 'succesfully generated',
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
     description: 'Admin is not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: "You don't have access",
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -119,23 +163,31 @@ export class AdminsController {
     return this.adminsService.findOneAdmin(id);
   }
 
+  //-------------- GET STUDENT BY ID --------------------//
+
   @ApiOperation({ summary: 'Get Student by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'succesfully generated',
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
     description: 'Student is not found',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid id',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
   @Get('get-students/:id')
   findOneStudent(@Param('id') id: string) {
     return this.adminsService.findOneStudent(id);
   }
+
+  //-------------- GET TEACHER BY ID --------------------//
 
   @ApiOperation({ summary: 'Get Teacher by id' })
   @ApiResponse({
@@ -143,12 +195,16 @@ export class AdminsController {
     description: 'succesfully generated',
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
     description: 'Teacher is not found',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
   })
   @Get('get-teachers/:id')
   findOneTeacher(@Param('id') id: string) {
