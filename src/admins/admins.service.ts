@@ -27,19 +27,19 @@ export class AdminService {
     if (user)
       throw new BadRequestException('Phone number is already registered');
 
-    const lastId: number[] = await this.userModel
-      .aggregate()
-      .group({ _id: null, last: { $max: '$id' } })
-      .project(['-_id last'])
-      .exec();
+    // const lastId: number[] = await this.userModel
+    //   .aggregate()
+    //   .group({ _id: null, last: { $max: '$id' } })
+    //   .project(['-_id last'])
+    //   .exec();
 
-    console.log(lastId);
-    if (!lastId.length) {
-      lastId[0] = 1;
-    }
+    // console.log(lastId);
+    // if (!lastId.length) {
+    //   lastId[0] = 1;
+    // }
 
     const newUser = await this.userModel.create({
-      id: lastId[0] + 1,
+      // id: lastId[0] + 1,
       ...createUserDto,
       role: 'student',
       image: '',
@@ -59,17 +59,31 @@ export class AdminService {
     };
   }
 
-  async findAllStudents(res: Response) {
-    const users = await this.userModel.find({ role: 'student' });
-    if (!users.length) {
-      res.status(HttpStatus.NO_CONTENT);
+  async findAllStudents(page: number, limit: number, res: Response) {
+    try {
+      let limit_1: number;
+      let page_1: number;
+      page_1 = +page > 1 ? +page : 1;
+      limit_1 = +limit > 0 ? +limit : 10;
+      console.log(page_1);
+      console.log(limit_1);
+      const users = await this.userModel
+        .find({ role: 'student' })
+        .skip((page_1 - 1) * limit_1)
+        .limit(limit_1);
+      if (!users.length) {
+        res.status(HttpStatus.NO_CONTENT);
+      }
+      const count = await this.userModel.count({ role: 'student' });
+      return { students: users, count };
+    } catch (error) {
+      throw new BadRequestException('Bad request from client');
     }
-    return { students: users };
   }
 
   async findAllTeachers() {
     const users = await this.userModel.find({ role: 'teacher' });
-    return { students: users };
+    return { students: users, count: users.length };
   }
 
   async findOneAdmin(id: string) {

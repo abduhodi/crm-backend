@@ -10,6 +10,8 @@ import {
   Get,
   Param,
   Res,
+  Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,6 +19,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiProperty,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -29,7 +32,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SelfGuard } from '../guards/self.guard';
 import { FileUploadDto } from '../users/dto/file-upload.dto';
-import { Response } from 'express';
+import { Response, query } from 'express';
 
 @Controller('admin')
 @ApiTags('Admins')
@@ -39,30 +42,6 @@ import { Response } from 'express';
 export class AdminsController {
   constructor(private readonly adminsService: AdminService) {}
 
-  //-------------- UPDATE STUDENT --------------------//
-
-  @ApiOperation({ summary: 'Update Student' })
-  @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'succesfully updated',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Student is not found or invalid id',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'Your Role is not as required',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Token is not found',
-  })
-  @Post('update-student/:id')
-  @HttpCode(HttpStatus.ACCEPTED)
-  updateStudent(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
-    return this.adminsService.updateStudent(id, createUserDto);
-  }
   //-------------- ADD NEW STUDENT --------------------//
 
   @ApiOperation({ summary: 'Add new Student' })
@@ -84,6 +63,31 @@ export class AdminsController {
     return this.adminsService.createStudent(createUserDto);
   }
 
+  //-------------- UPDATE STUDENT --------------------//
+
+  @ApiOperation({ summary: 'Update Student' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'succesfully updated',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Student is not found or invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Put('update-student/:id')
+  @HttpCode(HttpStatus.ACCEPTED)
+  updateStudent(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
+    return this.adminsService.updateStudent(id, createUserDto);
+  }
+
   //-------------- GET ALL STUDENTS --------------------//
 
   @ApiOperation({ summary: 'Get all Students' })
@@ -103,10 +107,11 @@ export class AdminsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Token is not found',
   })
-  @Get('get-students')
+  @Get('get-students/:q')
   @HttpCode(HttpStatus.OK)
-  findAllStudents(@Res({ passthrough: true }) res: Response) {
-    return this.adminsService.findAllStudents(res);
+  findAllStudents(@Query() q: any, @Res({ passthrough: true }) res: Response) {
+    console.log(q);
+    return this.adminsService.findAllStudents(q?.page, q?.limit, res);
   }
 
   //-------------- GET ALL TEACHERS --------------------//
