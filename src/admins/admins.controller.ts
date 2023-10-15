@@ -12,6 +12,7 @@ import {
   Res,
   Put,
   Query,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -85,7 +86,7 @@ export class AdminsController {
   @Put('update-student/:id')
   @HttpCode(HttpStatus.ACCEPTED)
   updateStudent(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
-    return this.adminsService.updateStudent(id, createUserDto);
+    return this.adminsService.updateUser(id, createUserDto);
   }
 
   //-------------- GET ALL STUDENTS --------------------//
@@ -94,10 +95,6 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'students list is empty',
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
@@ -110,8 +107,47 @@ export class AdminsController {
   @Get('get-students/:q')
   @HttpCode(HttpStatus.OK)
   findAllStudents(@Query() q: any, @Res({ passthrough: true }) res: Response) {
-    console.log(q);
     return this.adminsService.findAllStudents(q?.page, q?.limit, res);
+  }
+
+  //-------------- GET STUDENT BY ID --------------------//
+
+  @ApiOperation({ summary: 'Get Student by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully generated',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Get('get-student/:id')
+  findOneStudent(@Param('id') id: string) {
+    return this.adminsService.findOneStudent(id);
+  }
+
+  //-------------- DELETE STUDENT BY ID --------------------//
+
+  @ApiOperation({ summary: 'Delete Student by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'deleted successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Delete('delete-student/:id')
+  deleteStudent(@Param('id') id: string) {
+    return this.adminsService.deleteUser(id);
   }
 
   //-------------- GET ALL TEACHERS --------------------//
@@ -133,10 +169,34 @@ export class AdminsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Token is not found',
   })
-  @Get('get-teachers')
+  @Get('get-teachers/:q')
   @HttpCode(HttpStatus.OK)
-  findAllTeachers() {
-    return this.adminsService.findAllTeachers();
+  findAllTeachers(@Query() q: any, @Res({ passthrough: true }) res: Response) {
+    return this.adminsService.findAllTeachers(q?.page, q?.limit, res);
+  }
+
+  //-------------- GET TEACHER BY ID --------------------//
+
+  @ApiOperation({ summary: 'Get Teacher by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully generated',
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Teacher is not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Get('get-teacher/:id')
+  findOneTeacher(@Param('id') id: string) {
+    return this.adminsService.findOneTeacher(id);
   }
 
   //-------------- GET ADMIN BY ID --------------------//
@@ -163,56 +223,8 @@ export class AdminsController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid id',
   })
-  @Get('get-admins/:id')
+  @Get('get-admin/:id')
   findOneAdmin(@Param('id') id: string) {
     return this.adminsService.findOneAdmin(id);
-  }
-
-  //-------------- GET STUDENT BY ID --------------------//
-
-  @ApiOperation({ summary: 'Get Student by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Student is not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid id',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Token is not found',
-  })
-  @Get('get-students/:id')
-  findOneStudent(@Param('id') id: string) {
-    return this.adminsService.findOneStudent(id);
-  }
-
-  //-------------- GET TEACHER BY ID --------------------//
-
-  @ApiOperation({ summary: 'Get Teacher by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Teacher is not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid id',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Token is not found',
-  })
-  @Get('get-teachers/:id')
-  findOneTeacher(@Param('id') id: string) {
-    return this.adminsService.findOneTeacher(id);
   }
 }

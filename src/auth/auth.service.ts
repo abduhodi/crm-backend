@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -37,7 +38,8 @@ export class AuthService {
       );
     }
     const tokens = await this.generateToken(user._id.toString());
-    user.token = tokens.refresh_token;
+
+    user.token = bcrypt.hashSync(tokens.refresh_token, 7);
     await user.save();
     return {
       user: {
@@ -70,8 +72,12 @@ export class AuthService {
 
   async logout(req: Request) {
     const user = req['user'];
+    const token = req['token'];
     if (!user) {
       throw new ForbiddenException('User is not found');
+    }
+    if (bcrypt.compareSync(token, user?.token)) {
+      throw new UnauthorizedException('Invalid token');
     }
     user.token = '';
     await user.save();

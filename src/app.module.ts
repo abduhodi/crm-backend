@@ -12,6 +12,9 @@ import { DirectorModule } from './director/director.module';
 import { AdminsModule } from './admins/admins.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CoursesModule } from './courses/courses.module';
+import { GroupsModule } from './groups/groups.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { join } from 'path';
     StudentsModule,
     TeachersModule,
     DirectorModule,
+    CoursesModule,
+    GroupsModule,
+    RoomsModule,
   ],
   controllers: [],
   providers: [],

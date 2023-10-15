@@ -58,6 +58,7 @@ export class AdminService {
       },
     };
   }
+  //----------------------- GET ALL STUDENTs -----------------------------//
 
   async findAllStudents(page: number, limit: number, res: Response) {
     try {
@@ -65,38 +66,20 @@ export class AdminService {
       let page_1: number;
       page_1 = +page > 1 ? +page : 1;
       limit_1 = +limit > 0 ? +limit : 10;
-      console.log(page_1);
-      console.log(limit_1);
+
       const users = await this.userModel
         .find({ role: 'student' })
         .skip((page_1 - 1) * limit_1)
         .limit(limit_1);
-      if (!users.length) {
-        res.status(HttpStatus.NO_CONTENT);
-      }
       const count = await this.userModel.count({ role: 'student' });
       return { students: users, count };
     } catch (error) {
+      console.log(error);
       throw new BadRequestException('Bad request from client');
     }
   }
 
-  async findAllTeachers() {
-    const users = await this.userModel.find({ role: 'teacher' });
-    return { students: users, count: users.length };
-  }
-
-  async findOneAdmin(id: string) {
-    const valid = isValidObjectId(id);
-    if (!valid) {
-      throw new BadRequestException('Invalid id');
-    }
-    const user = await this.userModel.findOne({ id, role: 'admin' });
-    if (!user) {
-      throw new HttpException('Admin is not found', HttpStatus.NO_CONTENT);
-    }
-    return { admin: user };
-  }
+  //----------------------- GET SINGLE STUDENT -----------------------------//
 
   async findOneStudent(id: string) {
     const valid = isValidObjectId(id);
@@ -104,11 +87,73 @@ export class AdminService {
       throw new BadRequestException('Invalid id');
     }
     const user = await this.userModel.findOne({ id, role: 'student' });
+
     // if (!user) {
     //   throw new NotFoundException('User is not found');
     // }
     return { student: user };
   }
+
+  //----------------------- UPDATE USER -----------------------------//
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const valid = isValidObjectId(id);
+    if (!valid) {
+      throw new BadRequestException('Invalid id');
+    }
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new BadRequestException('User is not found');
+    }
+    const exist = await this.userModel.findOne({ phone: updateUserDto.phone });
+    if (exist && user?.id !== exist?.id) {
+      throw new BadRequestException('Phone number is already registered');
+    }
+    await user.updateOne(updateUserDto);
+    const updatedUser = await this.userModel.findById(id);
+    return { updated_user: updatedUser };
+  }
+
+  //----------------------- DELETE USER -----------------------------//
+
+  async deleteUser(id: string) {
+    const valid = isValidObjectId(id);
+    if (!valid) {
+      throw new BadRequestException('Invalid id');
+    }
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException(
+        'User is not found by given id',
+        HttpStatus.NO_CONTENT,
+      );
+    }
+    await user.deleteOne();
+    return { message: 'deleted successfully' };
+  }
+
+  //----------------------- GET ALL TEACHERS -----------------------------//
+
+  async findAllTeachers(page: number, limit: number, res: Response) {
+    try {
+      let limit_1: number;
+      let page_1: number;
+      page_1 = +page > 1 ? +page : 1;
+      limit_1 = +limit > 0 ? +limit : 10;
+
+      const users = await this.userModel
+        .find({ role: 'teacher' })
+        .skip((page_1 - 1) * limit_1)
+        .limit(limit_1);
+      const count = await this.userModel.count({ role: 'teacher' });
+      return { teachers: users, count };
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Bad request from client');
+    }
+  }
+
+  //----------------------- GET TEACHER BY ID -----------------------------//
 
   async findOneTeacher(id: string) {
     const valid = isValidObjectId(id);
@@ -122,6 +167,20 @@ export class AdminService {
     return { teacher: user };
   }
 
+  //----------------------- GET ADMIN BY ID (self profile) -----------------------------//
+
+  async findOneAdmin(id: string) {
+    const valid = isValidObjectId(id);
+    if (!valid) {
+      throw new BadRequestException('Invalid id');
+    }
+    const user = await this.userModel.findOne({ id, role: 'admin' });
+    if (!user) {
+      throw new HttpException('Admin is not found', HttpStatus.NO_CONTENT);
+    }
+    return { admin: user };
+  }
+
   async findOne(id: string) {
     const valid = isValidObjectId(id);
     if (!valid) {
@@ -132,32 +191,5 @@ export class AdminService {
       throw new NotFoundException('User is not found');
     }
     return user;
-  }
-
-  async updateStudent(id: string, updateUserDto: UpdateUserDto) {
-    const valid = isValidObjectId(id);
-    if (!valid) {
-      throw new BadRequestException('Invalid id');
-    }
-    const user = await this.userModel.findById(id);
-    if (!user) {
-      throw new BadRequestException('Student is not found');
-    }
-    await user.updateOne(updateUserDto);
-    const updatedUser = await this.userModel.findById(id);
-    return { updated_user: updatedUser };
-  }
-
-  async remove(id: string) {
-    const valid = isValidObjectId(id);
-    if (!valid) {
-      throw new BadRequestException('Invalid id');
-    }
-    const user = await this.userModel.findById(id);
-    if (!user) {
-      throw new NotFoundException('User is not found');
-    }
-    await user.deleteOne();
-    return { message: 'deleted successfully' };
   }
 }

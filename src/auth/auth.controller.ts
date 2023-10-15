@@ -23,7 +23,7 @@ import { AuthGuard } from '../guards/auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  // ----------------------------------LOGIN-----------------------------////////
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -35,6 +35,7 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  // ----------------------------------LOGOUT-----------------------------////////
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Logout' })

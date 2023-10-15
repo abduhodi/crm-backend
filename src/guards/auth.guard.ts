@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -29,6 +29,10 @@ export class AuthGuard implements CanActivate {
       if (!user || !user.token || !user.status) {
         throw new UnauthorizedException('Forbidden action');
       }
+      // if (bcrypt.compareSync(token, user.token)) {
+      //   throw new UnauthorizedException('Invalid token');
+      // }
+      request['token'] = token;
       request['user'] = user;
     } catch (error) {
       throw new UnauthorizedException('Token is invalid');
