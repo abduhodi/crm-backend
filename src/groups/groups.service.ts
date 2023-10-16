@@ -67,7 +67,7 @@ export class GroupsService {
     if (exist && exist.id !== group.id) {
       throw new BadRequestException('Group is already exists');
     }
-    await this.groupModel.updateOne({ id }, updateGroupDto);
+    await this.groupModel.updateOne({ _id: id }, updateGroupDto);
     const updated = await this.groupModel.findById(id);
     return { updated };
   }

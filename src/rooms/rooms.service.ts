@@ -1,26 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
+
+import { Model, isValidObjectId } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 
 @Injectable()
 export class RoomsService {
-  create(createRoomDto: CreateRoomDto) {
-    return 'This action adds a new room';
+  constructor(
+    @InjectModel(Room.name)
+    private roomModel: Model<Room>,
+  ) {}
+
+  async createRoom(createRoomDto: CreateRoomDto) {
+    const exist = await this.roomModel.findOne({
+      name: createRoomDto.name,
+    });
+    if (exist) {
+      throw new BadRequestException('Room is already exists');
+    }
+    const room = await this.roomModel.create(createRoomDto);
+    return { room };
   }
 
-  findAll() {
-    return `This action returns all rooms`;
+  async fetchAllRooms(page: number, limit: number) {
+    let page1: number;
+    let limit1: number;
+    page1 = +page > 0 ? +page : 1;
+    limit1 = +limit > 0 ? +limit : 10;
+
+    const rooms = await this.roomModel
+      .find()
+      .skip((page1 - 1) * limit1)
+      .limit(limit1);
+    const count = await this.roomModel.count({});
+    return { rooms, count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
+  async fetchSingleRoom(id: string) {
+    const isValidId = isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid id');
+    }
+    const room = await this.roomModel.findById(id);
+    return { room };
   }
 
-  update(id: number, updateRoomDto: UpdateRoomDto) {
-    return `This action updates a #${id} room`;
+  async updateRoom(id: string, updateRoomDto: UpdateRoomDto) {
+    const isValidId = isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid id');
+    }
+    const room = await this.roomModel.findById(id);
+    if (!room) {
+      throw new BadRequestException('Invalid id. Room does not exist');
+    }
+    const exist = await this.roomModel.findOne({
+      name: updateRoomDto.name,
+    });
+    if (exist && exist.id !== room.id) {
+      throw new BadRequestException('Room is already exists');
+    }
+    await this.roomModel.updateOne({ _id: id }, updateRoomDto);
+    const updated = await this.roomModel.findById(id);
+    return { updated };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} room`;
+  async removeRoom(id: string) {
+    const isValidId = isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid id');
+    }
+    const room = await this.roomModel.findById(id);
+    if (!room) {
+      throw new BadRequestException('Invalid id. Room does not exist');
+    }
+    await room.deleteOne();
+    return { message: 'deleted successfully' };
   }
 }

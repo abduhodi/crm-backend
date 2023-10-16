@@ -66,7 +66,7 @@ export class CoursesService {
     if (exist && exist.id !== course.id) {
       throw new BadRequestException('Course is already exists');
     }
-    await this.courseModel.updateOne({ id }, updateCourseDto);
+    await this.courseModel.updateOne({ _id: id }, updateCourseDto);
     const updated = await this.courseModel.findById(id);
     return { updated };
   }
