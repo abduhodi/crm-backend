@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export type GroupDocument = HydratedDocument<Group>;
 
-@Schema()
+@Schema({ versionKey: false })
 export class Group {
   @Prop({
     type: String,

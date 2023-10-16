@@ -49,7 +49,9 @@ export class GroupsService {
     if (!isValidId) {
       throw new BadRequestException('Invalid id');
     }
-    const group = await this.groupModel.findById(id);
+    const group = await this.groupModel
+      .findById(id)
+      .populate(['course_id', 'room_id']);
     return { group };
   }
 
