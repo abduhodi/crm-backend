@@ -1,34 +1,139 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  Put,
+  HttpStatus,
+  HttpCode,
+  UseGuards,
+} from '@nestjs/common';
+
+import {
+  ApiBasicAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
 import { GroupsService } from './groups.service';
+import { ROLE } from '../enums/role.enum';
+import { Roles } from '../decorators/roles.decorator';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
+@ApiBasicAuth()
+@ApiTags('Groups')
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  @Post()
+  // ------------------------------CREATE GROUP-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'create new group' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'successfully added new group',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'group is already exists',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('create-group')
   create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupsService.create(createGroupDto);
+    return this.groupsService.createGroup(createGroupDto);
   }
 
-  @Get()
-  findAll() {
-    return this.groupsService.findAll();
+  // ------------------------------FETCH ALL GROUPS-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'fetch all groups' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('all/:q')
+  findAll(@Query() q: any) {
+    return this.groupsService.fetchAllGroups(q?.page, q?.limit);
   }
 
+  // ------------------------------FETCH SINGLE GROUP-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'fetch single group by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.groupsService.findOne(+id);
+    return this.groupsService.fetchSingleGroup(id);
   }
 
-  @Patch(':id')
+  // ------------------------------UPDATE GROUP-----------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'update group by id' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'successfully updated',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Put('update/:id')
   update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
-    return this.groupsService.update(+id, updateGroupDto);
+    return this.groupsService.updateGroup(id, updateGroupDto);
   }
 
-  @Delete(':id')
+  // ------------------------------DELETE GROUP----------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'delete group by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
-    return this.groupsService.remove(+id);
+    return this.groupsService.removeGroup(id);
   }
 }
