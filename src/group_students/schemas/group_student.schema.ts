@@ -18,6 +18,13 @@ export class GroupStudent {
     required: true,
   })
   student: string;
+
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: false,
+  })
+  status: boolean;
 }
 
 export const GroupStudentSchema = SchemaFactory.createForClass(GroupStudent);

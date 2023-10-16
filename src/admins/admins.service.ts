@@ -48,7 +48,7 @@ export class AdminService {
     return {
       message: 'Success',
       user: {
-        id: newUser.id,
+        _id: newUser._id,
         first_name: newUser.first_name,
         last_name: newUser.last_name,
         phone: newUser.phone,
@@ -70,7 +70,8 @@ export class AdminService {
       const users = await this.userModel
         .find({ role: 'student' })
         .skip((page_1 - 1) * limit_1)
-        .limit(limit_1);
+        .limit(limit_1)
+        .select('-password -token');
       const count = await this.userModel.count({ role: 'student' });
       return { students: users, count };
     } catch (error) {
@@ -86,7 +87,9 @@ export class AdminService {
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
-    const user = await this.userModel.findOne({ id, role: 'student' });
+    const user = await this.userModel
+      .findOne({ _id: id, role: 'student' })
+      .select('-password -token');
 
     // if (!user) {
     //   throw new NotFoundException('User is not found');
@@ -169,7 +172,7 @@ export class AdminService {
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
-    const user = await this.userModel.findOne({ id, role: 'teacher' });
+    const user = await this.userModel.findOne({ _id: id, role: 'teacher' });
     if (!user) {
       throw new HttpException('Teacher is not found', HttpStatus.NO_CONTENT);
     }
@@ -183,7 +186,7 @@ export class AdminService {
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
-    const user = await this.userModel.findOne({ id, role: 'admin' });
+    const user = await this.userModel.findOne({ _id: id, role: 'admin' });
     if (!user) {
       throw new HttpException('Admin is not found', HttpStatus.NO_CONTENT);
     }

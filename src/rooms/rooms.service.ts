@@ -46,7 +46,7 @@ export class RoomsService {
   async fetchSingleRoom(id: string) {
     const isValidId = isValidObjectId(id);
     if (!isValidId) {
-      throw new BadRequestException('Invalid id');
+      throw new BadRequestException('Invalid room id');
     }
     const room = await this.roomModel.findById(id);
     return { room };

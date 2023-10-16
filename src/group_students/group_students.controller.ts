@@ -101,7 +101,7 @@ export class GroupStudentsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  @Delete('delete/:id')
+  @Delete('delete')
   remove(@Body() deleteDto: CreateGroupStudentDto) {
     return this.groupStudentsService.removeStudentFromGroup(deleteDto);
   }

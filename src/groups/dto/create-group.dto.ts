@@ -42,6 +42,7 @@ export class CreateGroupDto {
     required: true,
   })
   @IsString()
+  @IsNotEmpty()
   room_id: string;
 
   @ApiProperty({
@@ -55,5 +56,6 @@ export class CreateGroupDto {
     required: true,
   })
   @IsString()
+  @IsNotEmpty()
   course_id: string;
 }

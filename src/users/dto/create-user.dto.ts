@@ -5,6 +5,7 @@ import {
   IsString,
   Length,
   MaxLength,
+  MinLength,
   Validate,
 } from 'class-validator';
 import { PhoneValidator } from '../../validators/phone.validator.decorator';
@@ -15,6 +16,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
+  @Length(3, 30)
   @IsNotEmpty({ message: 'FirstName should not be empty' })
   first_name: string;
 
@@ -23,6 +25,7 @@ export class CreateUserDto {
     required: true,
   })
   @IsString()
+  @Length(3, 30)
   @IsNotEmpty({ message: 'LastName should not be empty' })
   last_name: string;
 

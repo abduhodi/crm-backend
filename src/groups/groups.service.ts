@@ -10,15 +10,31 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Group } from './schemas/group.schema';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { RoomsService } from '../rooms/rooms.service';
+import { CoursesService } from '../courses/courses.service';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectModel(Group.name)
     private groupModel: Model<Group>,
+    private roomService: RoomsService,
+    private courseService: CoursesService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
+    const { room } = await this.roomService.fetchSingleRoom(
+      createGroupDto.room_id,
+    );
+    if (!room) {
+      throw new BadRequestException('Room is not found ');
+    }
+    const { course } = await this.courseService.fetchSingleCourse(
+      createGroupDto.course_id,
+    );
+    if (!course) {
+      throw new BadRequestException('Course is not found ');
+    }
     const exist = await this.groupModel.findOne({
       name: createGroupDto.name,
     });

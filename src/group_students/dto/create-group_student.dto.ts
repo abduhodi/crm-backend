@@ -15,9 +15,9 @@ export class CreateGroupStudentDto {
     type: String,
     required: true,
   })
-  @Length(13, 13, { message: 'Enter valid phone number Ex.(+998901234567)' })
+  @Length(13, 13, { message: 'Enter valid phone number (Ex. +998901234567)' })
   @Validate(PhoneValidator, {
-    message: 'Enter valid phone number Ex.(+998901234567)',
+    message: 'Enter valid phone number (Ex. +998901234567)',
   })
   student_phone: string;
 }

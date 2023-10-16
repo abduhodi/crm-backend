@@ -45,7 +45,7 @@ export class CoursesService {
   async fetchSingleCourse(id: string) {
     const isValidId = isValidObjectId(id);
     if (!isValidId) {
-      throw new BadRequestException('Invalid id');
+      throw new BadRequestException('Invalid course id');
     }
     const course = await this.courseModel.findById(id);
     return { course };
