@@ -38,7 +38,8 @@ export class GroupsService {
     const groups = await this.groupModel
       .find()
       .skip((page1 - 1) * limit1)
-      .limit(limit1);
+      .limit(limit1)
+      .populate(['course_id', 'room_id']);
     const count = await this.groupModel.count({});
     return { groups, count };
   }

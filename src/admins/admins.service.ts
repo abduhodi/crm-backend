@@ -94,6 +94,15 @@ export class AdminService {
     return { student: user };
   }
 
+  async findOneStudentByPhone(phone: string) {
+    const user = await this.userModel.findOne({ phone, role: 'student' });
+
+    // if (!user) {
+    //   throw new NotFoundException('User is not found');
+    // }
+    return { student: user };
+  }
+
   //----------------------- UPDATE USER -----------------------------//
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {

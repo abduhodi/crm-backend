@@ -15,6 +15,7 @@ import { join } from 'path';
 import { CoursesModule } from './courses/courses.module';
 import { GroupsModule } from './groups/groups.module';
 import { RoomsModule } from './rooms/rooms.module';
+import { GroupStudentsModule } from './group_students/group_students.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RoomsModule } from './rooms/rooms.module';
     CoursesModule,
     GroupsModule,
     RoomsModule,
+    GroupStudentsModule,
   ],
   controllers: [],
   providers: [],

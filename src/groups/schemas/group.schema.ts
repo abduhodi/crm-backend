@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type GroupDocument = HydratedDocument<Group>;
 
@@ -31,7 +31,8 @@ export class Group {
   time: string;
 
   @Prop({
-    type: String,
+    type: Types.ObjectId,
+    ref: 'Room',
     required: true,
   })
   room_id: string;
@@ -43,7 +44,8 @@ export class Group {
   status: boolean;
 
   @Prop({
-    type: String,
+    type: Types.ObjectId,
+    ref: 'Course',
     required: true,
   })
   course_id: string;
