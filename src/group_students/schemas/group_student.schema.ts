@@ -10,14 +10,14 @@ export class GroupStudent {
     ref: 'Group',
     required: true,
   })
-  group_id: string;
+  group: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: 'User',
     required: true,
   })
-  student_id: string;
+  student: string;
 }
 
 export const GroupStudentSchema = SchemaFactory.createForClass(GroupStudent);

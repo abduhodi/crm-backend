@@ -41,15 +41,15 @@ export class GroupStudentsService {
       throw new BadRequestException('Student is not found');
     }
     const exist = await this.groupStudentModel.findOne({
-      group_id: group._id,
-      student_id: student._id,
+      group: group._id,
+      student: student._id,
     });
     if (exist) {
       throw new BadRequestException('Student is already joined to this group');
     }
     const added = await this.groupStudentModel.create({
-      group_id: group._id,
-      student_id: student._id,
+      group: group._id,
+      student: student._id,
     });
 
     return { create: added };
@@ -65,7 +65,7 @@ export class GroupStudentsService {
       .find()
       .skip((page1 - 1) * limit1)
       .limit(limit1)
-      .populate(['group_id', 'student_id']);
+      .populate(['group', 'student']);
     const count = await this.groupStudentModel.count({});
     return { group: group_students, count };
   }
@@ -115,8 +115,8 @@ export class GroupStudentsService {
       throw new BadRequestException('Student is not found');
     }
     const group_student = await this.groupStudentModel.findOne({
-      group_id: dto,
-      student_id: student._id,
+      group: dto,
+      student: student._id,
     });
     if (!group_student) {
       throw new BadRequestException('Invalid id. Student is in this group');
