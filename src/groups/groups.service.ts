@@ -68,15 +68,52 @@ export class GroupsService {
   async fetchAvailableRooms(getFreeRoomDto: GetFreeRoomDto) {
     const groups = await this.groupModel.find({
       end_date: {
-        $not: {
-          $lte: getFreeRoomDto.start_date,
-        },
+        $gte: getFreeRoomDto.start_date,
       },
-      end_time: {
-        $not: {
-          $lte: getFreeRoomDto.start_time,
+      $or: [
+        {
+          $and: [
+            {
+              start_time: {
+                $lte: getFreeRoomDto.start_time,
+              },
+            },
+            {
+              end_time: {
+                $gte: getFreeRoomDto.start_time,
+              },
+            },
+          ],
         },
-      },
+        {
+          $and: [
+            {
+              start_time: {
+                $lte: getFreeRoomDto.end_time,
+              },
+            },
+            {
+              end_time: {
+                $gte: getFreeRoomDto.end_time,
+              },
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              start_time: {
+                $gte: getFreeRoomDto.start_time,
+              },
+            },
+            {
+              end_time: {
+                $lte: getFreeRoomDto.end_time,
+              },
+            },
+          ],
+        },
+      ],
       days: getFreeRoomDto.days,
     });
     const busyRooms = groups.map((group) => group.room_id);
