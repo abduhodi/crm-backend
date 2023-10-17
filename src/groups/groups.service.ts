@@ -12,6 +12,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { CoursesService } from '../courses/courses.service';
+import { GetFreeRoomDto } from './dto/get-free-room.dto';
 
 @Injectable()
 export class GroupsService {
@@ -41,7 +42,11 @@ export class GroupsService {
     if (exist) {
       throw new BadRequestException('Group is already exists');
     }
-    const group = await this.groupModel.create(createGroupDto);
+
+    const end_date = new Date(createGroupDto.start_date);
+    end_date.setMonth(end_date.getMonth() + course.period);
+
+    const group = await this.groupModel.create({ ...createGroupDto, end_date });
     return { group };
   }
 
@@ -58,6 +63,25 @@ export class GroupsService {
       .populate(['course_id', 'room_id']);
     const count = await this.groupModel.count({});
     return { groups, count };
+  }
+
+  async fetchAvailableRooms(getFreeRoomDto: GetFreeRoomDto) {
+    const groups = await this.groupModel.find({
+      end_date: {
+        $not: {
+          $lte: getFreeRoomDto.start_date,
+        },
+      },
+      end_time: {
+        $not: {
+          $lte: getFreeRoomDto.start_time,
+        },
+      },
+      days: getFreeRoomDto.days,
+    });
+    const busyRooms = groups.map((group) => group.room_id);
+    const rooms = await this.roomService.getFreeRooms(busyRooms);
+    return rooms;
   }
 
   async fetchSingleGroup(id: string) {

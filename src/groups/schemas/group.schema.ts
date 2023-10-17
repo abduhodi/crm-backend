@@ -19,21 +19,33 @@ export class Group {
   start_date: string;
 
   @Prop({
+    type: Date,
+    required: false,
+  })
+  end_date: string;
+
+  @Prop({
     type: Boolean,
     required: true,
   })
   days: boolean;
 
   @Prop({
-    type: String,
+    type: Number,
     required: true,
   })
-  time: string;
+  start_time: number;
+
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  end_time: number;
 
   @Prop({
     type: Types.ObjectId,
     ref: 'Room',
-    required: true,
+    required: false,
   })
   room_id: string;
 

@@ -4,31 +4,17 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumber,
-  IsPositive,
   IsString,
 } from 'class-validator';
 
-export class CreateGroupDto {
-  @ApiProperty({
-    type: String,
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
+export class GetFreeRoomDto {
   @ApiProperty({
     type: Date,
-  })
-  @IsDateString()
-  start_date: string;
-
-  @ApiProperty({
-    type: Boolean,
     required: true,
   })
-  @IsBoolean()
-  days: boolean;
+  @IsDateString()
+  @IsNotEmpty()
+  start_date: string;
 
   @ApiProperty({
     type: Number,
@@ -36,6 +22,7 @@ export class CreateGroupDto {
   })
   @IsNumber()
   start_time: number;
+
   @ApiProperty({
     type: Number,
     required: true,
@@ -44,24 +31,9 @@ export class CreateGroupDto {
   end_time: number;
 
   @ApiProperty({
-    type: String,
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  room_id: string;
-
-  @ApiProperty({
     type: Boolean,
+    required: true,
   })
   @IsBoolean()
-  status: boolean;
-
-  @ApiProperty({
-    type: String,
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  course_id: string;
+  days: boolean;
 }

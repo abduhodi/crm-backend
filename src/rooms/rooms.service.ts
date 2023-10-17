@@ -29,6 +29,13 @@ export class RoomsService {
     return { room };
   }
 
+  async getFreeRooms(rooms: string[]) {
+    const avaliableRooms = await this.roomModel.find({
+      _id: { $not: { $in: rooms } },
+    });
+    return avaliableRooms;
+  }
+
   async fetchAllRooms(page: number, limit: number) {
     let page1: number;
     let limit1: number;

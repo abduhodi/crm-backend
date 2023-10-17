@@ -26,6 +26,7 @@ import { ROLE } from '../enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { GetFreeRoomDto } from './dto/get-free-room.dto';
 
 @ApiBasicAuth()
 @ApiTags('Groups')
@@ -71,6 +72,23 @@ export class GroupsController {
   @Get('all/:q')
   findAll(@Query() q: any) {
     return this.groupsService.fetchAllGroups(q?.page, q?.limit);
+  }
+
+  // ------------------------------FETCH ALL AVAILABLE ROOM-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'fetch all avaliable rooms' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Post('available-rooms')
+  findAllFreeRooms(@Body() getFreeRoomDto: GetFreeRoomDto) {
+    return this.groupsService.fetchAvailableRooms(getFreeRoomDto);
   }
 
   // ------------------------------FETCH SINGLE GROUP-----------------------------//
