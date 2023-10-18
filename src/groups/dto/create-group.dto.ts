@@ -19,6 +19,7 @@ export class CreateGroupDto {
 
   @ApiProperty({
     type: Date,
+    required: true,
   })
   @IsDateString()
   start_date: string;
@@ -53,6 +54,7 @@ export class CreateGroupDto {
 
   @ApiProperty({
     type: Boolean,
+    required: false,
   })
   @IsBoolean()
   status: boolean;
