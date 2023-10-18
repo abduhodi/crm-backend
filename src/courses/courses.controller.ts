@@ -16,7 +16,7 @@ import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import {
-  ApiBasicAuth,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -26,7 +26,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
 
-@ApiBasicAuth()
+@ApiBearerAuth()
 @ApiTags('Courses')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('courses')

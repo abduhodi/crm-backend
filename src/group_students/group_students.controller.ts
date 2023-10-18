@@ -15,7 +15,7 @@ import { GroupStudentsService } from './group_students.service';
 import { CreateGroupStudentDto } from './dto/create-group_student.dto';
 import { UpdateGroupStudentDto } from './dto/update-group_student.dto';
 import {
-  ApiBasicAuth,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -25,7 +25,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
 
-@ApiBasicAuth()
+@ApiBearerAuth()
 @ApiTags('GroupStudents')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('group-students')

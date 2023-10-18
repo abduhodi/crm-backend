@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import {
-  ApiBasicAuth,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -28,7 +28,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
 
-@ApiBasicAuth()
+@ApiBearerAuth()
 @ApiTags('Groups')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('groups')

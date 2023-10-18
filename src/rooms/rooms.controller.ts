@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import {
-  ApiBasicAuth,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -27,7 +27,7 @@ import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 
-@ApiBasicAuth()
+@ApiBearerAuth()
 @ApiTags('Rooms')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('rooms')
