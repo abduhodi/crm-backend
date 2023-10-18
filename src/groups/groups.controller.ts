@@ -86,6 +86,7 @@ export class GroupsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.OK)
   @Post('available-rooms')
   findAllFreeRooms(@Body() getFreeRoomDto: GetFreeRoomDto) {
     return this.groupsService.fetchAvailableRooms(getFreeRoomDto);
