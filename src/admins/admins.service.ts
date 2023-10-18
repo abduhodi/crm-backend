@@ -65,7 +65,7 @@ export class AdminService {
       let limit_1: number;
       let page_1: number;
       page_1 = +page > 1 ? +page : 1;
-      limit_1 = +limit > 0 ? +limit : 10;
+      limit_1 = +limit > 0 ? +limit : null;
 
       const users = await this.userModel
         .find({ role: 'student' })
@@ -151,7 +151,7 @@ export class AdminService {
       let limit_1: number;
       let page_1: number;
       page_1 = +page > 1 ? +page : 1;
-      limit_1 = +limit > 0 ? +limit : 10;
+      limit_1 = +limit > 0 ? +limit : null;
 
       const users = await this.userModel
         .find({ role: 'teacher' })

@@ -40,7 +40,7 @@ export class RoomsService {
     let page1: number;
     let limit1: number;
     page1 = +page > 0 ? +page : 1;
-    limit1 = +limit > 0 ? +limit : 10;
+    limit1 = +limit > 0 ? +limit : null;
 
     const rooms = await this.roomModel
       .find()
