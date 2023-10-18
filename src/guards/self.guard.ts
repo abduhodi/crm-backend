@@ -14,7 +14,7 @@ export class SelfGuard implements CanActivate {
     const id = request.params.id;
     const hasAccess = user?._id.toString() === id;
     if (!hasAccess) {
-      throw new ForbiddenException("You don't have access");
+      throw new ForbiddenException("You don't have an access");
     }
     return true;
   }

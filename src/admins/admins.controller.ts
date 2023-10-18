@@ -5,8 +5,6 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
-  UseInterceptors,
-  UploadedFile,
   Get,
   Param,
   Res,
@@ -16,11 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
   ApiOperation,
-  ApiProperty,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -29,11 +23,10 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SelfGuard } from '../guards/self.guard';
-import { FileUploadDto } from '../users/dto/file-upload.dto';
 import { Response, query } from 'express';
+import { UsersService } from '../users/users.service';
 
 @Controller('admin')
 @ApiTags('Admins')
@@ -41,7 +34,10 @@ import { Response, query } from 'express';
 @UseGuards(AuthGuard, RolesGuard)
 @Roles(ROLE.ADMIN)
 export class AdminsController {
-  constructor(private readonly adminsService: AdminService) {}
+  constructor(
+    private readonly adminsService: AdminService,
+    private readonly userService: UsersService,
+  ) {}
 
   //-------------- ADD NEW STUDENT --------------------//
 

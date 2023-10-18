@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const userAgent = request?.headers['user-agent'];
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException('Token is not found');
@@ -29,9 +30,11 @@ export class AuthGuard implements CanActivate {
       if (!user || !user.token || !user.status) {
         throw new UnauthorizedException('Forbidden action');
       }
-      // if (bcrypt.compareSync(token, user.token)) {
-      //   throw new UnauthorizedException('Invalid token');
-      // }
+
+      if (!bcrypt.compareSync(userAgent, payload?.agent)) {
+        throw new UnauthorizedException('Forbidden action');
+      }
+
       request['token'] = token;
       request['user'] = user;
     } catch (error) {

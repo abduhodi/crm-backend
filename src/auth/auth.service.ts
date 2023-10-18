@@ -18,7 +18,7 @@ export class AuthService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
   ) {}
-  async login(loginUserDto: LoginUserDto) {
+  async login(loginUserDto: LoginUserDto, req: Request) {
     const user = await this.userModel.findOne({
       phone: loginUserDto.phone,
     });
@@ -37,7 +37,7 @@ export class AuthService {
         'Sorry! Currently you are not active please contact to administration',
       );
     }
-    const tokens = await this.generateToken(user._id.toString());
+    const tokens = await this.generateToken(user._id.toString(), req);
 
     user.token = bcrypt.hashSync(tokens.refresh_token, 7);
     await user.save();
@@ -55,9 +55,10 @@ export class AuthService {
     };
   }
 
-  private async generateToken(id: string) {
+  private async generateToken(id: string, req: Request) {
     const payload = {
       id,
+      agent: bcrypt.hashSync(req.headers['user-agent'], 7),
     };
     const access_token = await this.jwtService.signAsync(payload, {
       secret: process.env.ACCESS_KEY,

@@ -45,6 +45,7 @@ export class User {
   @Prop({
     type: String,
     required: false,
+    default: null,
   })
   image: string;
 

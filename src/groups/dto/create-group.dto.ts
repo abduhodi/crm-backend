@@ -57,7 +57,7 @@ export class CreateGroupDto {
     required: false,
   })
   @IsBoolean()
-  status: boolean;
+  status?: boolean;
 
   @ApiProperty({
     type: String,

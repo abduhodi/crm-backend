@@ -25,7 +25,7 @@ import { GroupStudentsModule } from './group_students/group_students.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'data'),
-      exclude: ['index.html'],
+      // exclude: ['index.html'],
     }),
     UsersModule,
     AdminsModule,

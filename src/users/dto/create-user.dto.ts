@@ -39,6 +39,9 @@ export class CreateUserDto {
   })
   phone: string;
 
-  // @ApiProperty({ type: 'string', format: 'binary' })
-  // image: any;
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  image?: string;
 }

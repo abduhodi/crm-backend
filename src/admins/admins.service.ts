@@ -42,7 +42,6 @@ export class AdminService {
       // id: lastId[0] + 1,
       ...createUserDto,
       role: 'student',
-      image: '',
       password: bcrypt.hashSync(createUserDto.phone, 7),
     });
     return {
@@ -98,7 +97,9 @@ export class AdminService {
   }
 
   async findOneStudentByPhone(phone: string) {
-    const user = await this.userModel.findOne({ phone, role: 'student' });
+    const user = await this.userModel
+      .findOne({ phone, role: 'student' })
+      .select('-password -token');
 
     // if (!user) {
     //   throw new NotFoundException('User is not found');
@@ -122,7 +123,9 @@ export class AdminService {
       throw new BadRequestException('Phone number is already registered');
     }
     await user.updateOne(updateUserDto);
-    const updatedUser = await this.userModel.findById(id);
+    const updatedUser = await this.userModel
+      .findById(id)
+      .select('-password -token');
     return { updated_user: updatedUser };
   }
 
@@ -156,7 +159,8 @@ export class AdminService {
       const users = await this.userModel
         .find({ role: 'teacher' })
         .skip((page_1 - 1) * limit_1)
-        .limit(limit_1);
+        .limit(limit_1)
+        .select('-password -token');
       const count = await this.userModel.count({ role: 'teacher' });
       return { teachers: users, count };
     } catch (error) {
@@ -172,7 +176,9 @@ export class AdminService {
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
-    const user = await this.userModel.findOne({ _id: id, role: 'teacher' });
+    const user = await this.userModel
+      .findOne({ _id: id, role: 'teacher' })
+      .select('-password -token');
     if (!user) {
       throw new HttpException('Teacher is not found', HttpStatus.NO_CONTENT);
     }
@@ -186,7 +192,9 @@ export class AdminService {
     if (!valid) {
       throw new BadRequestException('Invalid id');
     }
-    const user = await this.userModel.findOne({ _id: id, role: 'admin' });
+    const user = await this.userModel
+      .findOne({ _id: id, role: 'admin' })
+      .select('-password -token');
     if (!user) {
       throw new HttpException('Admin is not found', HttpStatus.NO_CONTENT);
     }

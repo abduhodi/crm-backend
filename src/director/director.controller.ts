@@ -3,14 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   HttpStatus,
   HttpCode,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { DirectorService } from './director.service';
 import {
@@ -24,7 +20,6 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @ApiTags('Director')
@@ -65,13 +60,8 @@ export class DirectorController {
   @ApiConsumes('multipart/form-data')
   @Post('add-teacher')
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('image'))
-  createTeacher(
-    @Body() createUserDto: CreateUserDto,
-    @UploadedFile()
-    image: Express.Multer.File,
-  ) {
-    return this.directorService.createTeacher(createUserDto, image);
+  createTeacher(@Body() createUserDto: CreateUserDto) {
+    return this.directorService.createTeacher(createUserDto);
   }
 
   @ApiOperation({ summary: 'Get all Students' })
