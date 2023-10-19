@@ -3,7 +3,7 @@ import { existsSync, mkdir, writeFile } from 'fs';
 import * as path from 'path';
 import { v4 } from 'uuid';
 
-export async function uploadFile(file: Express.Multer.File): Promise<string> {
+export async function uploadFile(file: any): Promise<string> {
   try {
     const filePath = path.resolve(__dirname, '../../', 'data');
 

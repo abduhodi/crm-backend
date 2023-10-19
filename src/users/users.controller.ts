@@ -19,6 +19,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiResponse,
@@ -28,6 +29,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ValidFileValidator } from '../validators/file.validator';
 import { Request } from 'express';
+import { FileUploadDto } from './dto/file-upload.dto';
 
 @ApiTags('Uploads')
 @UseGuards(AuthGuard)
@@ -38,6 +40,12 @@ export class UsersController {
 
   //-------------- UPLOAD IMAGE --------------------//
 
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Image (png, jpeg)*',
+    type: FileUploadDto,
+  })
   @ApiOperation({ summary: 'Upload new image' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -51,7 +59,6 @@ export class UsersController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Token is not found',
   })
-  @UseInterceptors(FileInterceptor('image'))
   @Post('upload-image')
   @HttpCode(HttpStatus.CREATED)
   uploadImage(
@@ -60,7 +67,7 @@ export class UsersController {
         validators: [new ValidFileValidator({})],
       }),
     )
-    image: Express.Multer.File,
+    image: FileUploadDto,
   ) {
     return this.usersService.uploadImage(image);
   }

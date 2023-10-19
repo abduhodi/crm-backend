@@ -8,7 +8,6 @@ import { uploadFile } from '../utils/file-upload';
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -16,10 +15,10 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async uploadImage(image: Express.Multer.File) {
+  async uploadImage(image: any) {
     try {
       const filename = await uploadFile(image);
-      return filename;
+      return { image: filename };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
