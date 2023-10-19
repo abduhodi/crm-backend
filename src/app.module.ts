@@ -25,6 +25,7 @@ import { GroupStudentsModule } from './group_students/group_students.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'data'),
+      serveRoot: '/api',
       // exclude: ['index.html'],
     }),
     UsersModule,
