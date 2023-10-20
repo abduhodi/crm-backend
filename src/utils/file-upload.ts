@@ -27,7 +27,8 @@ export async function uploadFile(file: any): Promise<string> {
         }
       },
     );
-    return filename;
+    const base_uri = process.env.BASE_URI;
+    return base_uri + filename;
   } catch (error) {
     console.log(error);
     throw new BadRequestException(error.message);
