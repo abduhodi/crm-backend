@@ -31,10 +31,6 @@ export class DirectorService {
     if (!existRole) {
       throw new BadRequestException('Role is not found');
     }
-    const existCourse = await this.courseService.fetchSingleCourse(course);
-    if (!existCourse) {
-      throw new BadRequestException('Course is not found');
-    }
     const staff = await this.userModel.findOne({ phone });
     if (staff)
       throw new BadRequestException('Phone number is already registered');
