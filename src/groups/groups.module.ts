@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { GroupsController } from './groups.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -6,13 +6,19 @@ import { Group, GroupSchema } from './schemas/group.schema';
 import { UsersModule } from '../users/users.module';
 import { RoomsModule } from '../rooms/rooms.module';
 import { CoursesModule } from '../courses/courses.module';
+import { GroupStudentsModule } from '../group_students/group_students.module';
+import { GroupTeachersModule } from '../group_teachers/group_teachers.module';
+import { TeachersModule } from '../teachers/teachers.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
-    UsersModule,
-    RoomsModule,
-    CoursesModule,
+    forwardRef(() => UsersModule),
+    forwardRef(() => RoomsModule),
+    forwardRef(() => CoursesModule),
+    forwardRef(() => TeachersModule),
+    forwardRef(() => GroupStudentsModule),
+    forwardRef(() => GroupTeachersModule),
   ],
   controllers: [GroupsController],
   providers: [GroupsService],

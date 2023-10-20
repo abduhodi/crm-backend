@@ -66,4 +66,12 @@ export class CreateGroupDto {
   @IsString()
   @IsNotEmpty()
   course_id: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  teacher_id: string;
 }

@@ -57,7 +57,7 @@ export class AdminService {
       },
     };
   }
-  //----------------------- GET ALL STUDENTs -----------------------------//
+  //----------------------- GET ALL STUDENTS -----------------------------//
 
   async findAllStudents(page: number, limit: number, res: Response) {
     try {

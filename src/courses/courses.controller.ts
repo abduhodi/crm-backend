@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -25,13 +24,18 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
+import { CourseTeachersService } from '../course_teachers/course_teachers.service';
+import { CreateCourseTeacherDto } from '../course_teachers/dto/create-course_teacher.dto';
 
 @ApiBearerAuth()
 @ApiTags('Courses')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly courseTeachersService: CourseTeachersService,
+  ) {}
 
   // ------------------------------CREATE COURSE-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
@@ -116,6 +120,7 @@ export class CoursesController {
   }
 
   // ------------------------------DELETE COURSE-----------------------------//
+
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
   @ApiOperation({ summary: 'delete course by id' })
   @ApiResponse({
@@ -134,5 +139,124 @@ export class CoursesController {
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.coursesService.removeCourse(id);
+  }
+
+  // ------------------------------ADD TEACHER TO COURSE-----------------------------//
+
+  @ApiOperation({ summary: 'Add Teacher to Course' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'succesfully added',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('add-teacher')
+  addTeacher(@Body() createCourseTeacherDto: CreateCourseTeacherDto) {
+    return this.courseTeachersService.addTeacherToCourse(
+      createCourseTeacherDto,
+    );
+  }
+
+  @ApiOperation({ summary: 'Find All Teachers from All Courses' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('all-teachers')
+  findAllTeachersCourses() {
+    return this.courseTeachersService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Find All Teachers of One Course' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('all-teachers/:id')
+  findAllTeachersOfCourse(@Param('id') id: string) {
+    return this.courseTeachersService.findAllTeachersOfCourse(id);
+  }
+
+  // @ApiOperation({ summary: 'Update Teacher in Course' })
+  // @ApiResponse({
+  //   status: HttpStatus.ACCEPTED,
+  //   description: 'succesfully updated',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.BAD_REQUEST,
+  //   description: 'Invalid id',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.FORBIDDEN,
+  //   description: 'Your Role is not as required',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.UNAUTHORIZED,
+  //   description: 'Token is not found',
+  // })
+  // @HttpCode(HttpStatus.ACCEPTED)
+  // @Put('update')
+  // updateTeacherCourses(@Body() updateCourseTeacherDto: CreateCourseTeacherDto) {
+  //   return this.courseTeachersService.update(updateCourseTeacherDto);
+  // }
+
+  @ApiOperation({ summary: 'Delete Teacher from Course' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Delete('delete-teacher')
+  removeTeacher(@Body() removeDto: CreateCourseTeacherDto) {
+    return this.courseTeachersService.removeTeacherFromCourse(removeDto);
   }
 }

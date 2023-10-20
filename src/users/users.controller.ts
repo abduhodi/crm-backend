@@ -34,7 +34,7 @@ import { FileUploadDto } from './dto/file-upload.dto';
 import { UpdateProfileDto } from './dto/profile-update.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
-@ApiTags('Uploads')
+@ApiTags('Profile')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 @Controller('profile')

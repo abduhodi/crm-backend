@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,6 +8,8 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { CoursesService } from '../courses/courses.service';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
+import { TeachersService } from '../teachers/teachers.service';
+import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 
 @Injectable()
 export class GroupsService {
@@ -21,6 +18,7 @@ export class GroupsService {
     private groupModel: Model<Group>,
     private roomService: RoomsService,
     private courseService: CoursesService,
+    private teacherService: TeachersService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
@@ -36,6 +34,12 @@ export class GroupsService {
     if (!course) {
       throw new BadRequestException('Course is not found ');
     }
+    const { teacher } = await this.teacherService.findOneTeacher(
+      createGroupDto.teacher_id,
+    );
+    if (!teacher) {
+      throw new BadRequestException('Teacher is not found ');
+    }
     const exist = await this.groupModel.findOne({
       name: createGroupDto.name,
     });
@@ -47,6 +51,12 @@ export class GroupsService {
     end_date.setMonth(end_date.getMonth() + course.period);
 
     const group = await this.groupModel.create({ ...createGroupDto, end_date });
+
+    // await this.groupTeachersService.addTeacherToGroup({
+    //   group: group?.id,
+    //   teacher: teacher?.id,
+    // });
+
     return { group };
   }
 
