@@ -28,7 +28,7 @@ export class DirectorService {
   async createStaff(createUserDto: CreateUserDto) {
     const { role, course, phone, first_name, last_name, image } = createUserDto;
     const existRole = await this.roleService.fetchSingleRole(role);
-    if (!existRole) {
+    if (!existRole.role) {
       throw new BadRequestException('Role is not found');
     }
     const staff = await this.userModel.findOne({ phone });
@@ -39,7 +39,7 @@ export class DirectorService {
       last_name,
       phone,
       image,
-      role,
+      role: existRole.role.name,
       password: bcrypt.hashSync(createUserDto.phone, 7),
     });
     if (course) {

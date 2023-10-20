@@ -6,14 +6,16 @@ export class CreateGroupStudentDto {
   @ApiProperty({
     type: String,
     required: true,
+    description: 'group id',
   })
   @IsString()
   @IsNotEmpty()
-  group_id: string;
+  group: string;
 
   @ApiProperty({
     type: String,
     required: true,
+    description: 'student id',
   })
   @Length(13, 13, { message: 'Enter valid phone number (Ex. +998901234567)' })
   @Validate(PhoneValidator, {

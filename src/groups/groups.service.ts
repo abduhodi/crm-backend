@@ -2,43 +2,34 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Group } from './schemas/group.schema';
+import { Group, GroupDocument } from './schemas/group.schema';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { CoursesService } from '../courses/courses.service';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
-import { TeachersService } from '../teachers/teachers.service';
-import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectModel(Group.name)
-    private groupModel: Model<Group>,
+    private groupModel: Model<GroupDocument>,
     private roomService: RoomsService,
     private courseService: CoursesService,
-    private teacherService: TeachersService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
     const { room } = await this.roomService.fetchSingleRoom(
-      createGroupDto.room_id,
+      createGroupDto.room,
     );
     if (!room) {
       throw new BadRequestException('Room is not found ');
     }
     const { course } = await this.courseService.fetchSingleCourse(
-      createGroupDto.course_id,
+      createGroupDto.course,
     );
     if (!course) {
       throw new BadRequestException('Course is not found ');
-    }
-    const { teacher } = await this.teacherService.findOneTeacher(
-      createGroupDto.teacher_id,
-    );
-    if (!teacher) {
-      throw new BadRequestException('Teacher is not found ');
     }
     const exist = await this.groupModel.findOne({
       name: createGroupDto.name,
@@ -51,12 +42,6 @@ export class GroupsService {
     end_date.setMonth(end_date.getMonth() + course.period);
 
     const group = await this.groupModel.create({ ...createGroupDto, end_date });
-
-    // await this.groupTeachersService.addTeacherToGroup({
-    //   group: group?.id,
-    //   teacher: teacher?.id,
-    // });
-
     return { group };
   }
 

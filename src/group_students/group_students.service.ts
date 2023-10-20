@@ -24,12 +24,12 @@ export class GroupStudentsService {
   ) {}
 
   async addStudentToGroup(createGroupStudentDto: CreateGroupStudentDto) {
-    const isValidGroupId = isValidObjectId(createGroupStudentDto.group_id);
+    const isValidGroupId = isValidObjectId(createGroupStudentDto.group);
     if (!isValidGroupId) {
       throw new BadRequestException('Invalid id');
     }
     const { group } = await this.groupService.fetchSingleGroup(
-      createGroupStudentDto.group_id,
+      createGroupStudentDto.group,
     );
     if (!group) {
       throw new BadRequestException('Group is not found');
@@ -100,11 +100,11 @@ export class GroupStudentsService {
   // }
 
   async removeStudentFromGroup(dto: CreateGroupStudentDto) {
-    const isValidGroupId = isValidObjectId(dto.group_id);
+    const isValidGroupId = isValidObjectId(dto.group);
     if (!isValidGroupId) {
       throw new BadRequestException('Invalid group id');
     }
-    const { group } = await this.groupService.fetchSingleGroup(dto.group_id);
+    const { group } = await this.groupService.fetchSingleGroup(dto.group);
     if (!group) {
       throw new BadRequestException('Group is not found');
     }

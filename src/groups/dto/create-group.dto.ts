@@ -50,7 +50,7 @@ export class CreateGroupDto {
   })
   @IsString()
   @IsNotEmpty()
-  room_id: string;
+  room: string;
 
   @ApiProperty({
     type: Boolean,
@@ -65,13 +65,5 @@ export class CreateGroupDto {
   })
   @IsString()
   @IsNotEmpty()
-  course_id: string;
-
-  @ApiProperty({
-    type: String,
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  teacher_id: string;
+  course: string;
 }

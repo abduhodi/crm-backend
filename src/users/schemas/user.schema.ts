@@ -4,13 +4,6 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ versionKey: false })
 export class User {
-  // @Prop({
-  //   type: Number,
-  //   required: true,
-  //   unique: true,
-  // })
-  // id: number;
-
   @Prop({
     type: String,
     required: true,
@@ -37,9 +30,8 @@ export class User {
   status: boolean;
 
   @Prop({
-    type: Types.ObjectId,
+    type: String,
     required: true,
-    ref: 'Role',
   })
   role: string;
 

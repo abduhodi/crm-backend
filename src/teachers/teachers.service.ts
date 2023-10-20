@@ -83,8 +83,7 @@ export class TeachersService {
     try {
       const regex = new RegExp(phone + '$');
       const user = await this.userModel
-        .find({ phone: { $regex: regex } })
-        .findOne({ phone, role: 'teacher' })
+        .find({ phone: { $regex: regex }, role: 'teacher' })
         .select('-password -token')
         .exec();
       return { teacher: user };

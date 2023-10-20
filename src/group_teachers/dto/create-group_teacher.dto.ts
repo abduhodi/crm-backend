@@ -5,6 +5,7 @@ export class CreateGroupTeacherDto {
   @ApiProperty({
     type: String,
     required: true,
+    description: 'group id',
   })
   @IsString()
   @IsNotEmpty()
@@ -13,6 +14,7 @@ export class CreateGroupTeacherDto {
   @ApiProperty({
     type: String,
     required: true,
+    description: 'teacher id',
   })
   @IsString()
   @IsNotEmpty()

@@ -19,6 +19,7 @@ import {
   ApiTags,
   ApiOperation,
   ApiResponse,
+  ApiBody,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -155,6 +156,13 @@ export class TeachersController {
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'Token is not found',
+  })
+  @ApiBody({
+    schema: {
+      example: { phone: '4567' },
+      required: ['phone'],
+      description: 'type last digits of phone number',
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Post('search')

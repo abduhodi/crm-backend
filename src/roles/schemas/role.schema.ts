@@ -8,7 +8,7 @@ export class Role {
   @Prop({
     type: String,
     required: true,
-    uppercase: true,
+    lowercase: true,
   })
   name: string;
 

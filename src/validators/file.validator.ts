@@ -15,8 +15,8 @@ export class ValidFileValidator extends FileValidator {
     if (!(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg')) {
       return 'Image type must be png or jpeg';
     }
-    if (file.size > 2097152) {
-      return 'Image size must be less than 2 MB';
+    if (file.size > 512000) {
+      return 'Image size must be less than 500 KB';
     }
   }
 }
