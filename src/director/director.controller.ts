@@ -32,38 +32,39 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 export class DirectorController {
   constructor(private readonly directorService: DirectorService) {}
 
-  @ApiOperation({ summary: 'Add new Admin' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'succesfully added',
-  })
-  @Post('add-admin')
-  @HttpCode(HttpStatus.CREATED)
-  createAdmin(@Body() createUserDto: CreateUserDto) {
-    return this.directorService.createAdmin(createUserDto);
-  }
+  //----------------------- ADD Staff -----------------------------//
+  // @ApiOperation({ summary: 'Add Staff' })
+  // @ApiResponse({
+  //   status: HttpStatus.CREATED,
+  //   description: 'succesfully added',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.BAD_REQUEST,
+  //   description: 'Staff is already exists',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.FORBIDDEN,
+  //   description: 'Your Role is not as required',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.UNAUTHORIZED,
+  //   description: 'Token is not found',
+  // })
+  // @HttpCode(HttpStatus.CREATED)
+  // @Post('add-staff')
+  // createStaff(@Body() createStaffDto: CreateUserDto) {
+  //   return this.teachersService.createTeacher(createTeacherDto);
+  // }
 
-  @ApiOperation({ summary: 'Activate/Deactivate Admin' })
+  @ApiOperation({ summary: 'Activate/Deactivate Staff' })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'succesfully updated',
   })
-  @Post('activate-admin/:id')
+  @Post('activate-staff/:id')
   @HttpCode(HttpStatus.ACCEPTED)
   activateAdmin(@Param('id') id: string) {
     return this.directorService.activateAdmin(id);
-  }
-
-  @ApiOperation({ summary: 'Add new Teacher' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'succesfully added',
-  })
-  @ApiConsumes('multipart/form-data')
-  @Post('add-teacher')
-  @HttpCode(HttpStatus.CREATED)
-  createTeacher(@Body() createUserDto: CreateUserDto) {
-    return this.directorService.createTeacher(createUserDto);
   }
 
   @ApiOperation({ summary: 'Get all Staffs' })
@@ -79,103 +80,5 @@ export class DirectorController {
   @HttpCode(HttpStatus.OK)
   findAllStaffs(@Query() q: any) {
     return this.directorService.findAllStaffs(q?.page, q?.limit);
-  }
-  @ApiOperation({ summary: 'Get all Students' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Students are not found',
-  })
-  @Get('get-students')
-  @HttpCode(HttpStatus.OK)
-  findAllStudents() {
-    return this.directorService.findAllStudents();
-  }
-
-  @ApiOperation({ summary: 'Get all Teachers' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Teachers are not found',
-  })
-  @Get('get-teachers')
-  @HttpCode(HttpStatus.OK)
-  findAllTeachers() {
-    return this.directorService.findAllTeachers();
-  }
-
-  @ApiOperation({ summary: 'Get all Admins' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Admins are not found',
-  })
-  @Get('get-admins')
-  @HttpCode(HttpStatus.OK)
-  findAllAdmins() {
-    return this.directorService.findAllAdmins();
-  }
-
-  @ApiOperation({ summary: 'Get Admin by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Admin is not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid id',
-  })
-  @Get('get-admins/:id')
-  findOneAdmin(@Param('id') id: string) {
-    return this.directorService.findOneAdmin(id);
-  }
-
-  @ApiOperation({ summary: 'Get Student by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Student is not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid id',
-  })
-  @Get('get-students/:id')
-  findOneStudent(@Param('id') id: string) {
-    return this.directorService.findOneStudent(id);
-  }
-
-  @ApiOperation({ summary: 'Get Teacher by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'succesfully generated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Teacher is not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid id',
-  })
-  @Get('get-teachers/:id')
-  findOneTeacher(@Param('id') id: string) {
-    return this.directorService.findOneTeacher(id);
   }
 }
