@@ -50,6 +50,12 @@ export class User {
   image: string;
 
   @Prop({
+    type: Date,
+    default: new Date(),
+  })
+  start_date: string;
+
+  @Prop({
     type: String,
     required: true,
   })
