@@ -7,6 +7,8 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { DirectorService } from './director.service';
 import {
@@ -64,6 +66,20 @@ export class DirectorController {
     return this.directorService.createTeacher(createUserDto);
   }
 
+  @ApiOperation({ summary: 'Get all Staffs' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully generated',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Staffs are not found',
+  })
+  @Get('get-staffs/:q')
+  @HttpCode(HttpStatus.OK)
+  findAllStaffs(@Query() q: any) {
+    return this.directorService.findAllStaffs(q?.page, q?.limit);
+  }
   @ApiOperation({ summary: 'Get all Students' })
   @ApiResponse({
     status: HttpStatus.OK,

@@ -48,6 +48,21 @@ export class DirectorService {
     return { user };
   }
 
+  async findAllStaffs(page: number, limit: number) {
+    let page1: number;
+    let limit1: number;
+    page1 = +page > 0 ? +page : 1;
+    limit1 = +limit > 0 ? +limit : null;
+
+    const staffs = await this.userModel
+      .find({
+        role: { $not: { $in: ['student', 'director'] } },
+      })
+      .skip((page1 - 1) * limit1)
+      .limit(limit1);
+
+    return { staffs };
+  }
   async findAllStudents() {
     const users = await this.userModel.find({ role: 'student' });
 
