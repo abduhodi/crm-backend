@@ -17,6 +17,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { GroupStudentsModule } from './group_students/group_students.module';
 import { CourseTeachersModule } from './course_teachers/course_teachers.module';
 import { GroupTeachersModule } from './group_teachers/group_teachers.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { GroupTeachersModule } from './group_teachers/group_teachers.module';
     GroupStudentsModule,
     CourseTeachersModule,
     GroupTeachersModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [],
