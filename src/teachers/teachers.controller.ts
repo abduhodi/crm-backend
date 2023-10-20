@@ -31,13 +31,12 @@ import { UpdateUserDto } from '../users/dto/update-user.dto';
 @ApiTags('Teachers')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
-@Roles(ROLE.ADMIN)
 @Controller('teachers')
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}
 
   //----------------------- ADD TEACHER -----------------------------//
-
+  @Roles(ROLE.DIRECTOR)
   @ApiOperation({ summary: 'Add Teacher' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -63,6 +62,7 @@ export class TeachersController {
 
   //----------------------- FIND All TEACHER -----------------------------//
 
+  @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Find All Teachers' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -88,6 +88,7 @@ export class TeachersController {
 
   //----------------------- FIND ONE TEACHER -----------------------------//
 
+  @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Find One Teacher' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -112,7 +113,7 @@ export class TeachersController {
   }
 
   //----------------------- FIND TEACHER BY PHONE -----------------------------//
-
+  @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Find Teacher by phone' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -137,7 +138,7 @@ export class TeachersController {
   }
 
   //----------------------- SEARCH TEACHER BY PHONE -----------------------------//
-
+  @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Search Teacher by phone' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -162,7 +163,7 @@ export class TeachersController {
   }
 
   //----------------------- UPDATE TEACHER -----------------------------//
-
+  @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Update Teacher' })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
@@ -187,7 +188,7 @@ export class TeachersController {
   }
 
   //----------------------- DELETE TEACHER -----------------------------//
-
+  @Roles(ROLE.DIRECTOR)
   @ApiOperation({ summary: 'Delete Teacher' })
   @ApiResponse({
     status: HttpStatus.OK,
