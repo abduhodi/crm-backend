@@ -44,4 +44,16 @@ export class CreateUserDto {
     required: false,
   })
   image?: string;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  role?: string;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  course?: string;
 }

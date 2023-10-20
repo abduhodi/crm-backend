@@ -33,28 +33,28 @@ export class DirectorController {
   constructor(private readonly directorService: DirectorService) {}
 
   //----------------------- ADD Staff -----------------------------//
-  // @ApiOperation({ summary: 'Add Staff' })
-  // @ApiResponse({
-  //   status: HttpStatus.CREATED,
-  //   description: 'succesfully added',
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.BAD_REQUEST,
-  //   description: 'Staff is already exists',
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.FORBIDDEN,
-  //   description: 'Your Role is not as required',
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.UNAUTHORIZED,
-  //   description: 'Token is not found',
-  // })
-  // @HttpCode(HttpStatus.CREATED)
-  // @Post('add-staff')
-  // createStaff(@Body() createStaffDto: CreateUserDto) {
-  //   return this.teachersService.createTeacher(createTeacherDto);
-  // }
+  @ApiOperation({ summary: 'Add Staff' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'succesfully added',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Staff is already exists',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('add-staff')
+  createStaff(@Body() createStaffDto: CreateUserDto) {
+    return this.directorService.createStaff(createStaffDto);
+  }
 
   @ApiOperation({ summary: 'Activate/Deactivate Staff' })
   @ApiResponse({
