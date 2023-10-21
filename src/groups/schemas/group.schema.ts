@@ -47,7 +47,7 @@ export class Group {
     ref: 'Room',
     required: false,
   })
-  room_id: string;
+  room: string;
 
   @Prop({
     type: Boolean,
@@ -60,7 +60,7 @@ export class Group {
     ref: 'Course',
     required: true,
   })
-  course_id: string;
+  course: string;
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);

@@ -41,7 +41,7 @@ export class GroupTeachersService {
 
     const isTeachCourseMember =
       await this.courseTeachersService.findCourseMemberTeacher(
-        groupData.course_id,
+        groupData.course,
         teacher,
       );
 
@@ -105,7 +105,7 @@ export class GroupTeachersService {
 
     const isTeachCourseMember =
       await this.courseTeachersService.findCourseMemberTeacher(
-        groupData.course_id,
+        groupData.course,
         teacher,
       );
 

@@ -55,7 +55,7 @@ export class GroupsService {
       .find()
       .skip((page1 - 1) * limit1)
       .limit(limit1)
-      .populate(['course_id', 'room_id']);
+      .populate(['course', 'room']);
     const count = await this.groupModel.count({});
     return { groups, count };
   }
@@ -111,7 +111,7 @@ export class GroupsService {
       ],
       days: getFreeRoomDto.days,
     });
-    const busyRooms = groups.map((group) => group.room_id);
+    const busyRooms = groups.map((group) => group.room);
     const rooms = await this.roomService.getFreeRooms(busyRooms);
     return rooms;
   }
@@ -123,7 +123,7 @@ export class GroupsService {
     }
     const group = await this.groupModel
       .findById(id)
-      .populate(['course_id', 'room_id']);
+      .populate(['course', 'room']);
     return { group };
   }
 
