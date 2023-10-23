@@ -61,6 +61,13 @@ export class Group {
     required: true,
   })
   course: string;
+
+  @Prop({
+    type: Number,
+    required: false,
+    default: 0,
+  })
+  student_count: number;
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);

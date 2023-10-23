@@ -51,6 +51,8 @@ export class GroupStudentsService {
       group: group._id,
       student: student._id,
     });
+    group.student_count++;
+    await group.save();
 
     return { create: added };
   }
