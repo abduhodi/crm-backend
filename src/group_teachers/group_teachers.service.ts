@@ -83,7 +83,7 @@ export class GroupTeachersService {
     const groups = await this.groupTeacherModel
       .find({ teacher: id })
       .populate('group');
-    return { teachers: groups.map((item) => item.group) };
+    return { groups: groups.map((item) => item.group) };
   }
 
   //----------------------- UPDATE TEACHER IN ONE GROUP -----------------------------//
