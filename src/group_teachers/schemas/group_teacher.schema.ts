@@ -14,7 +14,7 @@ export class GroupTeacher {
 
   @Prop({
     type: Types.ObjectId,
-    ref: 'Teacher',
+    ref: 'User',
     required: true,
   })
   teacher: string;

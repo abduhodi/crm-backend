@@ -38,13 +38,11 @@ export class GroupTeachersService {
     if (!teacherData) {
       throw new BadRequestException('Teacher is not found');
     }
-
     const isTeachCourseMember =
       await this.courseTeachersService.findCourseMemberTeacher(
         groupData.course,
-        teacher,
+        teacherData.id,
       );
-
     if (!isTeachCourseMember) {
       throw new BadRequestException(
         "Teacher is not added to this group's course",
@@ -57,9 +55,9 @@ export class GroupTeachersService {
       throw new BadRequestException('Teacher is already added to this Group');
     }
 
-    const newMember = (
-      await this.groupTeacherModel.create(createGroupTeacherDto)
-    ).populate(['group', 'teacher']);
+    const newMember = await this.groupTeacherModel.create(
+      createGroupTeacherDto,
+    );
 
     return { response: newMember };
   }

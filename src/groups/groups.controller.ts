@@ -100,24 +100,6 @@ export class GroupsController {
     return this.groupsService.fetchAvailableRooms(getFreeRoomDto);
   }
 
-  // ------------------------------FETCH ALL AVAILABLE TEACHERS-----------------------------//
-  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
-  @ApiOperation({ summary: 'fetch all avaliable teachers' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'successfully returned',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'token is not found',
-  })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  @HttpCode(HttpStatus.OK)
-  @Post('available-teachers')
-  findAllFreeTeachers(@Body() getFreeRoomDto: GetFreeRoomDto) {
-    // return this.groupsService.fetchAvailablTeachers(getFreeRoomDto);
-  }
-
   // ------------------------------FETCH SINGLE GROUP-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
   @ApiOperation({ summary: 'fetch single group by id' })
