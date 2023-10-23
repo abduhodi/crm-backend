@@ -28,13 +28,17 @@ import { ROLE } from '../enums/role.enum';
 import { CreateCourseTeacherDto } from '../course_teachers/dto/create-course_teacher.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 
 @ApiTags('Teachers')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('teachers')
 export class TeachersController {
-  constructor(private readonly teachersService: TeachersService) {}
+  constructor(
+    private readonly teachersService: TeachersService,
+    private readonly groupTeachersService: GroupTeachersService,
+  ) {}
 
   //----------------------- ADD TEACHER -----------------------------//
   @Roles(ROLE.DIRECTOR)
@@ -111,6 +115,23 @@ export class TeachersController {
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.teachersService.findOneTeacher(id);
+  }
+
+  // ------------------------------FETCH ALL GROUP TEACHERS-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'get all group teachers' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('get-groups/:id')
+  findAllTeacherGroups(@Param('id') id: string) {
+    return this.groupTeachersService.findAllGroups(id);
   }
 
   //----------------------- FIND TEACHER BY PHONE -----------------------------//

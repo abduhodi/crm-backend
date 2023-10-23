@@ -261,22 +261,22 @@ export class GroupsController {
     return this.groupTeachersService.addTeacherToGroup(createGroupTeacherDto);
   }
 
-  // // ------------------------------FETCH ALL GROUP TEACHERS-----------------------------//
-  // @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
-  // @ApiOperation({ summary: 'get all group teachers' })
-  // @ApiResponse({
-  //   status: HttpStatus.OK,
-  //   description: 'successfully returned',
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.UNAUTHORIZED,
-  //   description: 'token is not found',
-  // })
-  // @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  // @Get('all-teachers/:q')
-  // findAllTeachersGroups(@Query() q: any) {
-  //   return this.groupTeachersService.findAll();
-  // }
+  // ------------------------------FETCH ALL GROUP TEACHERS-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'get all group teachers' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('get-teachers/:id')
+  findAllGroupTeachers(@Param('id') id: string) {
+    return this.groupTeachersService.findAllTeachers(id);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

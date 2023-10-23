@@ -68,10 +68,22 @@ export class GroupTeachersService {
     return this.groupTeacherModel.find();
   }
 
-  //----------------------- FIND TEACHER IN ONE GROUP -----------------------------//
+  //----------------------- FIND ALL TEACHERS IN ONE GROUP -----------------------------//
 
-  findOne(id: string) {
-    return this.groupTeacherModel.findById(id);
+  async findAllTeachers(id: string) {
+    const groups = await this.groupTeacherModel
+      .find({ group: id })
+      .populate('teacher');
+    return { teachers: groups.map((item) => item.teacher) };
+  }
+
+  //----------------------- FIND TEACHER ALL GROUPS -----------------------------//
+
+  async findAllGroups(id: string) {
+    const groups = await this.groupTeacherModel
+      .find({ teacher: id })
+      .populate('group');
+    return { teachers: groups.map((item) => item.group) };
   }
 
   //----------------------- UPDATE TEACHER IN ONE GROUP -----------------------------//
