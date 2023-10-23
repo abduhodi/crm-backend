@@ -118,7 +118,7 @@ export class TeachersController {
   }
 
   // ------------------------------FETCH ALL GROUP TEACHERS-----------------------------//
-  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
   @ApiOperation({ summary: 'get all group teachers' })
   @ApiResponse({
     status: HttpStatus.OK,
