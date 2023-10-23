@@ -28,13 +28,17 @@ import { ROLE } from '../enums/role.enum';
 import { CreateCourseTeacherDto } from '../course_teachers/dto/create-course_teacher.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 
 @ApiTags('Teachers')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('teachers')
 export class TeachersController {
-  constructor(private readonly teachersService: TeachersService) {}
+  constructor(
+    private readonly teachersService: TeachersService,
+    private readonly groupTeachersService: GroupTeachersService,
+  ) {}
 
   //----------------------- ADD TEACHER -----------------------------//
   @Roles(ROLE.DIRECTOR)
@@ -86,6 +90,32 @@ export class TeachersController {
   findAll(@Query() q: any) {
     return this.teachersService.findAllTeachers(q?.page, q?.limit);
   }
+
+  // //----------------------- FIND All TEACHER GROUPS -----------------------------//
+
+  // @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
+  // @ApiOperation({ summary: 'Find All Teacher groups' })
+  // @ApiResponse({
+  //   status: HttpStatus.OK,
+  //   description: 'succesfully returned',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.BAD_REQUEST,
+  //   description: 'Invalid id',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.FORBIDDEN,
+  //   description: 'Your Role is not as required',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.UNAUTHORIZED,
+  //   description: 'Token is not found',
+  // })
+  // @HttpCode(HttpStatus.OK)
+  // @Get('all/:q')
+  // findAllGroupTeachers(@Query() q: any) {
+  //   return this.teachersService.findAllTeachers(q?.page, q?.limit);
+  // }
 
   //----------------------- FIND ONE TEACHER -----------------------------//
 
