@@ -119,6 +119,62 @@ export class GroupsService {
     return rooms;
   }
 
+  async fetchAvailableTeachers(getFreeTeachersDto: GetFreeRoomDto) {
+    const groups = await this.groupModel.find({
+      end_date: {
+        $gte: getFreeTeachersDto.start_date,
+      },
+      $or: [
+        {
+          $and: [
+            {
+              start_time: {
+                $lte: getFreeTeachersDto.start_time,
+              },
+            },
+            {
+              end_time: {
+                $gte: getFreeTeachersDto.start_time,
+              },
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              start_time: {
+                $lte: getFreeTeachersDto.end_time,
+              },
+            },
+            {
+              end_time: {
+                $gte: getFreeTeachersDto.end_time,
+              },
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              start_time: {
+                $gte: getFreeTeachersDto.start_time,
+              },
+            },
+            {
+              end_time: {
+                $lte: getFreeTeachersDto.end_time,
+              },
+            },
+          ],
+        },
+      ],
+      days: getFreeTeachersDto.days,
+    });
+    // const busyTeachers= await this.co;
+    // const rooms = await this.roomService.getFreeRooms(busyRooms);
+    // return rooms;
+  }
+
   async fetchSingleGroup(id: string) {
     const isValidId = isValidObjectId(id);
     if (!isValidId) {

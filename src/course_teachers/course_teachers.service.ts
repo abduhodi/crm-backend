@@ -6,6 +6,7 @@ import { CourseTeacher } from './schemas/course_teacher.schema';
 import { Model, isValidObjectId } from 'mongoose';
 import { CoursesService } from '../courses/courses.service';
 import { TeachersService } from '../teachers/teachers.service';
+import { isNotEmpty } from 'class-validator';
 
 @Injectable()
 export class CourseTeachersService {
@@ -58,10 +59,12 @@ export class CourseTeachersService {
 
   //----------------------- FIND ALL TEACHERS IN ONE COURSE -----------------------------//
 
-  findAllTeachersOfCourse(course: string) {
-    return this.courseTeacherModel
+  async findAllTeachersOfCourse(course: string) {
+    const teachers = await this.courseTeacherModel
       .find({ course })
       .populate(['course', 'teacher']);
+
+    return { teachers: teachers.map((item) => item.teacher) };
   }
 
   //----------------------- FIND TEACHER IN ONE COURSE -----------------------------//
