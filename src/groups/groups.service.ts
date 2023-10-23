@@ -19,6 +19,9 @@ export class GroupsService {
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
+    if (createGroupDto.start_time >= createGroupDto.end_time) {
+      throw new BadRequestException('end time must be greater than start time');
+    }
     const { room } = await this.roomService.fetchSingleRoom(
       createGroupDto.room,
     );

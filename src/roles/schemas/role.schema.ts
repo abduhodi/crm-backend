@@ -11,13 +11,6 @@ export class Role {
     lowercase: true,
   })
   name: string;
-
-  @Prop({
-    type: String,
-    required: false,
-    default: '',
-  })
-  description: string;
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

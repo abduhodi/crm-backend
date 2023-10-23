@@ -28,7 +28,7 @@ export class DirectorService {
   async createStaff(createUserDto: CreateUserDto) {
     const { role, course, phone, first_name, last_name, image } = createUserDto;
     const existRole = await this.roleService.fetchSingleRole(role);
-    if (!existRole.role) {
+    if (!existRole.role || existRole?.role?.name === 'director') {
       throw new BadRequestException('Role is not found');
     }
     const staff = await this.userModel.findOne({ phone });
@@ -45,7 +45,7 @@ export class DirectorService {
     if (course) {
       await this.courseTeacherService.addTeacherToCourse({
         course,
-        teacher: staff.id,
+        teacher: newStaff.id,
       });
     }
     return { staff: { ...newStaff, password: null, token: null } };
@@ -71,8 +71,29 @@ export class DirectorService {
         role: { $not: { $in: ['student', 'director'] } },
       })
       .skip((page1 - 1) * limit1)
-      .limit(limit1);
+      .limit(limit1)
+      .select('-token -password');
+    const count = await this.userModel
+      .find({
+        role: { $not: { $in: ['student', 'director'] } },
+      })
+      .count();
 
-    return { staffs };
+    return { staffs, count };
+  }
+
+  async deleteStaff(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid Staff id');
+    }
+
+    const staff = await this.userModel.findById(id);
+    if (!staff) {
+      throw new BadRequestException('Staff is not found');
+    }
+
+    await staff.deleteOne();
+
+    return { message: 'delete success' };
   }
 }

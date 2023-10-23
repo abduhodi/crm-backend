@@ -15,6 +15,14 @@ export class StudentsService {
   //----------------------- ADD NEW STUDENT -----------------------------//
 
   async createStudent(createUserDto: CreateUserDto) {
+    Object.defineProperties(createUserDto, {
+      _id: { enumerable: false },
+      token: { enumerable: false },
+      password: { enumerable: false },
+      role: { enumerable: false },
+      start_date: { enumerable: false },
+      status: { enumerable: false },
+    });
     const user = await this.userModel.findOne({ phone: createUserDto.phone });
     if (user)
       throw new BadRequestException('Phone number is already registered');
@@ -96,6 +104,14 @@ export class StudentsService {
   //----------------------- UPDATE STUDENT -----------------------------//
 
   async updateStudent(id: string, updateUserDto: UpdateUserDto) {
+    Object.defineProperties(updateUserDto, {
+      _id: { enumerable: false },
+      token: { enumerable: false },
+      password: { enumerable: false },
+      role: { enumerable: false },
+      start_date: { enumerable: false },
+      status: { enumerable: false },
+    });
     const valid = isValidObjectId(id);
     if (!valid) {
       throw new BadRequestException('Invalid Student id');

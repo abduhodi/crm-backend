@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bcrypt from 'bcrypt';
+console.log(bcrypt.hashSync('+998936996008', 7));
 async function run() {
   try {
     const port = process.env.PORT || 3003;

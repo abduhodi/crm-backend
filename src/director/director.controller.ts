@@ -9,6 +9,7 @@ import {
   HttpCode,
   Req,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { DirectorService } from './director.service';
 import {
@@ -80,5 +81,20 @@ export class DirectorController {
   @HttpCode(HttpStatus.OK)
   findAllStaffs(@Query() q: any) {
     return this.directorService.findAllStaffs(q?.page, q?.limit);
+  }
+
+  @ApiOperation({ summary: 'Delete Staff' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Staff is not found',
+  })
+  @Delete('delete-staff/:id')
+  @HttpCode(HttpStatus.OK)
+  deleteStaff(@Param('id') id: any) {
+    return this.directorService.deleteStaff(id);
   }
 }

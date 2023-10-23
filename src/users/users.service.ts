@@ -86,6 +86,15 @@ export class UsersService {
   //----------------------- UPDATE USER -----------------------------//
 
   async updateProfile(req: any, updateUserDto: UpdateProfileDto) {
+    Object.defineProperties(updateUserDto, {
+      _id: { enumerable: false },
+      token: { enumerable: false },
+      password: { enumerable: false },
+      role: { enumerable: false },
+      start_date: { enumerable: false },
+      status: { enumerable: false },
+    });
+    console.log(updateUserDto);
     const id = req?.user?.id;
     const valid = isValidObjectId(id);
     if (!valid) {
@@ -95,7 +104,7 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('User is not found');
     }
-    const exist = await this.userModel.findOne({ phone: updateUserDto.phone });
+    const exist = await this.userModel.findOne({ phone: updateUserDto?.phone });
     if (exist && user?.id !== exist?.id) {
       throw new BadRequestException('Phone number is already registered');
     }

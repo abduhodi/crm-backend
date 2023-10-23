@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  Max,
+  Min,
 } from 'class-validator';
 
 export class CreateGroupDto {
@@ -36,12 +38,17 @@ export class CreateGroupDto {
     required: true,
   })
   @IsNumber()
+  @Min(360)
+  @Max(1320)
   start_time: number;
+
   @ApiProperty({
     type: Number,
     required: true,
   })
   @IsNumber()
+  @Min(480)
+  @Max(1380)
   end_time: number;
 
   @ApiProperty({
