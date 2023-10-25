@@ -25,6 +25,7 @@ import { ROLE } from '../enums/role.enum';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { StudentsService } from './students.service';
+import { SelfGuard } from '../guards/self.guard';
 
 @ApiTags('Students')
 @ApiBearerAuth()

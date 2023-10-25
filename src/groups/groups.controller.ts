@@ -31,6 +31,9 @@ import { GroupStudentsService } from '../group_students/group_students.service';
 import { CreateGroupStudentDto } from '../group_students/dto/create-group_student.dto';
 import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 import { CreateGroupTeacherDto } from '../group_teachers/dto/create-group_teacher.dto';
+import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
+import { UpdateStudentsAttendanceDto } from '../student_attendance/dto/update-many.dto';
+import { UpdateAttendanceDto } from '../student_attendance/dto/update-one.dto';
 
 @ApiBearerAuth()
 @ApiTags('Groups')
@@ -41,6 +44,7 @@ export class GroupsController {
     private readonly groupsService: GroupsService,
     private readonly groupStudentsService: GroupStudentsService,
     private readonly groupTeachersService: GroupTeachersService,
+    private readonly studentAttendanceService: StudentAttendanceService,
   ) {}
 
   // ------------------------------CREATE GROUP-----------------------------//
@@ -202,6 +206,124 @@ export class GroupsController {
   @Get('all-students/:id')
   findAllStudentsGroups(@Param('id') id: string) {
     return this.groupStudentsService.fetchGroupAllStudents(id);
+  }
+
+  // ------------------------------FETCH ONE GROUP'S ALL STUDENTS' ALL LESSONS'S ATTENDANCE-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary: "get all students' attendances in all lessons of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('attendance/:id/all/:q')
+  findAllStudentsGroupsAttendance(@Param('id') id: string, @Query() q: any) {
+    return this.studentAttendanceService.findSingleGroupAllStudentsAttendace(
+      id,
+      q?.page,
+      q?.limit,
+    );
+  }
+
+  // ------------------------------FETCH ONE GROUP'S ALL STUDENTS' ATTENDANCES IN ONE LESSON-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary: "get all students' attendances in one lesson of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('attendance/:group/:lesson')
+  findGroupLessonsAllStudentsAttendance(@Param() params: any) {
+    return this.studentAttendanceService.findSingleLessonStudentsAttendace(
+      params?.group,
+      params?.lesson,
+    );
+  }
+
+  // ------------------------------FETCH ONE GROUP'S ONE STUDENT'S ATTENDANCE IN ONE LESSON-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary: "get one student's one attendance in one lesson of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('attendance/:group/:lesson/:student')
+  findGroupLessonSingleStudentAttendance(@Param() params: any) {
+    return this.studentAttendanceService.findSingleStudentSingleLessonAttendace(
+      params?.group,
+      params?.lesson,
+      params?.student,
+    );
+  }
+
+  // ------------------------------UPDATE ONE GROUP'S ONE STUDENT'S ATTENDANCE IN ONE LESSON-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary:
+      "update one student's one attendance in one lesson of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'successfully updated',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Put('attendance/update/lesson/:id')
+  updateGroupLessonSingleStudentAttendance(
+    @Param('id') id: string,
+    @Body() data: UpdateAttendanceDto,
+  ) {
+    return this.studentAttendanceService.updateSingleStudentSingleLessonAttendace(
+      id,
+      data.value,
+    );
+  }
+
+  // ------------------------------UPDATE ONE GROUP'S ALL STUDENT'S ATTENDANCE IN ONE LESSON-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary:
+      "update all student's one attendance in one lesson of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'successfully updated',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Put('attendance/update/lesson')
+  updateGroupLessonAllStudentsAttendance(
+    @Body() data: UpdateStudentsAttendanceDto[],
+  ) {
+    return this.studentAttendanceService.updateSingleLessonStudentsAttendace(
+      data,
+    );
   }
 
   // @Get(':id')

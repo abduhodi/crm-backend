@@ -6,6 +6,13 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop({
     type: String,
+    required: false,
+    virtual: true,
+  })
+  id: string;
+
+  @Prop({
+    type: String,
     required: true,
   })
   first_name: string;
@@ -25,7 +32,7 @@ export class User {
 
   @Prop({
     type: Boolean,
-    default: false,
+    default: true,
   })
   status: boolean;
 
@@ -57,8 +64,13 @@ export class User {
   @Prop({
     type: String,
     required: false,
+    default: null,
   })
   token: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.post('save', (val) => {
+  val.id = val._id.toString();
+  val.save();
+});

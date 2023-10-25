@@ -11,16 +11,27 @@ import { GroupTeachersModule } from '../group_teachers/group_teachers.module';
 import { TeachersModule } from '../teachers/teachers.module';
 import { LessonsModule } from '../lessons/lessons.module';
 import { StudentAttendanceModule } from '../student_attendance/student_attendance.module';
+import { AdminsModule } from '../admins/admins.module';
+import { StudentsModule } from '../students/students.module';
+import { DirectorModule } from '../director/director.module';
+import { CourseTeachersModule } from '../course_teachers/course_teachers.module';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
     forwardRef(() => UsersModule),
-    forwardRef(() => RoomsModule),
-    forwardRef(() => CoursesModule),
+    forwardRef(() => AdminsModule),
+    forwardRef(() => StudentsModule),
     forwardRef(() => TeachersModule),
+    forwardRef(() => DirectorModule),
+    forwardRef(() => CoursesModule),
+    forwardRef(() => GroupsModule),
+    forwardRef(() => RoomsModule),
     forwardRef(() => GroupStudentsModule),
     forwardRef(() => GroupTeachersModule),
+    forwardRef(() => CourseTeachersModule),
+    forwardRef(() => RolesModule),
     forwardRef(() => LessonsModule),
     forwardRef(() => StudentAttendanceModule),
   ],

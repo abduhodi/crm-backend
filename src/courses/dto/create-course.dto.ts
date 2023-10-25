@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Length,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateCourseDto {
   @ApiProperty({
@@ -8,6 +16,7 @@ export class CreateCourseDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Length(3, 50)
   name: string;
 
   @ApiProperty({
@@ -16,6 +25,8 @@ export class CreateCourseDto {
   })
   @IsNumber()
   @IsPositive()
+  @Max(2000000)
+  @Min(200000)
   price: number;
 
   @ApiProperty({
@@ -24,5 +35,7 @@ export class CreateCourseDto {
   })
   @IsNumber()
   @IsPositive()
+  @Max(200)
+  @Min(30)
   period: number;
 }

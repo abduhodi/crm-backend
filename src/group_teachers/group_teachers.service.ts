@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CoursesService } from '../courses/courses.service';
 import { TeachersService } from '../teachers/teachers.service';
 import { GroupTeacher } from './schemas/group_teacher.schema';
 import { GroupsService } from '../groups/groups.service';

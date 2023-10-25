@@ -17,7 +17,7 @@ export class Lesson {
     require: true,
     default: new Date(),
   })
-  created_date: string;
+  date: string;
 
   @Prop({
     type: Types.ObjectId,

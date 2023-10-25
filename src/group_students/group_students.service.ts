@@ -1,26 +1,22 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { GroupStudent } from './schemas/group_student.schema';
 import { CreateGroupStudentDto } from './dto/create-group_student.dto';
 import { GroupsService } from '../groups/groups.service';
-import { StudentsService } from '../students/students.service';
 import { AdminService } from '../admins/admins.service';
-import { UpdateGroupStudentDto } from './dto/update-group_student.dto';
+import { LessonsService } from '../lessons/lessons.service';
+import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
 
 @Injectable()
 export class GroupStudentsService {
   constructor(
     @InjectModel(GroupStudent.name)
-    private groupStudentModel: Model<GroupStudent>,
-    private groupService: GroupsService,
-    private studentService: AdminService,
+    private readonly groupStudentModel: Model<GroupStudent>,
+    private readonly studentService: AdminService,
+    private readonly groupService: GroupsService,
+    private readonly lessonService: LessonsService,
+    private readonly studentAttendanceService: StudentAttendanceService,
   ) {}
 
   async addStudentToGroup(createGroupStudentDto: CreateGroupStudentDto) {
@@ -41,18 +37,29 @@ export class GroupStudentsService {
       throw new BadRequestException('Student is not found');
     }
     const exist = await this.groupStudentModel.findOne({
-      group: group._id,
-      student: student._id,
+      group: group.id,
+      student: student.id,
     });
     if (exist) {
       throw new BadRequestException('Student is already joined to this group');
     }
     const added = await this.groupStudentModel.create({
-      group: group._id,
-      student: student._id,
+      group: group.id,
+      student: student.id,
     });
     group.student_count++;
     await group.save();
+
+    const lessons = await this.lessonService.findGroupAllLessonsById(group.id);
+
+    lessons.forEach((lesson) => {
+      this.studentAttendanceService.generateAttendance(
+        group.id,
+        lesson.id,
+        student.id,
+        lesson.date,
+      );
+    });
 
     return { create: added };
   }
@@ -73,11 +80,15 @@ export class GroupStudentsService {
   }
 
   async fetchGroupAllStudents(group: string) {
-    console.log(group);
-    const students = await this.groupStudentModel.find({}).populate('student');
-    console.log(students);
+    const students = await this.groupStudentModel
+      .find({ group })
+      .populate({
+        path: 'student',
+        select: '-token -password -role',
+      })
+      .select('student -_id');
     return {
-      students: students.filter((item) => item.group.toString() === group),
+      students: students.map((st) => st.student),
     };
   }
 
@@ -127,7 +138,7 @@ export class GroupStudentsService {
     }
     const group_student = await this.groupStudentModel.findOne({
       group: dto,
-      student: student._id,
+      student: student.id,
     });
     if (!group_student) {
       throw new BadRequestException('Invalid id. Student is in this group');

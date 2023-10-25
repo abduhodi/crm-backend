@@ -24,6 +24,7 @@ export class TeachersService {
       role: { enumerable: false },
       start_date: { enumerable: false },
       status: { enumerable: false },
+      id: { enumerable: false },
     });
     const user = await this.userModel.findOne({ phone: createUserDto.phone });
     if (user)
@@ -106,6 +107,7 @@ export class TeachersService {
       role: { enumerable: false },
       start_date: { enumerable: false },
       status: { enumerable: false },
+      id: { enumerable: false },
     });
     const isValidId = isValidObjectId(id);
     if (!isValidId) {

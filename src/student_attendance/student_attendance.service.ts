@@ -1,5 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateStudentAttendanceDto } from './dto/create-student_attendance.dto';
+import { Injectable } from '@nestjs/common';
 import { UpdateStudentAttendanceDto } from './dto/update-student_attendance.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -7,32 +6,41 @@ import {
   StudentAttendanceDocument,
 } from './schemas/student_attendance.schema';
 import { Model, isValidObjectId } from 'mongoose';
-import { GroupStudentsService } from '../group_students/group_students.service';
+import {
+  GroupStudent,
+  GroupStudentsDocument,
+} from '../group_students/schemas/group_student.schema';
+import { UpdateStudentsAttendanceDto } from './dto/update-many.dto';
 
 @Injectable()
 export class StudentAttendanceService {
   constructor(
     @InjectModel(StudentAttendance.name)
     private readonly studentAttendanceModel: Model<StudentAttendanceDocument>,
-  ) // private groupStudentsService: GroupStudentsService,
-  {}
+    @InjectModel(GroupStudent.name)
+    private readonly groupStudentModel: Model<GroupStudentsDocument>, // private groupStudentsService: GroupStudentsService,
+  ) {}
 
-  async generateAttendance(group: string, lesson: string, date: string) {
-    if (!isValidObjectId(group) || !isValidObjectId(lesson)) {
+  async generateAttendance(
+    group: string,
+    lesson: string,
+    student: string,
+    date: string,
+  ) {
+    if (
+      !isValidObjectId(group) ||
+      !isValidObjectId(lesson) ||
+      !isValidObjectId(student)
+    ) {
       return null;
     }
 
-    // const { students } = await this.groupStudentsService.fetchGroupAllStudents(
-    //   group,
-    // );
-    // students.forEach(async (student: any) => {
-    //   await this.studentAttendanceModel.create({
-    //     group,
-    //     lesson,
-    //     student: student.id,
-    //     date,
-    //   });
-    // });
+    await this.studentAttendanceModel.create({
+      group,
+      lesson,
+      student,
+      date,
+    });
 
     return;
   }
@@ -43,15 +51,109 @@ export class StudentAttendanceService {
       .populate(['student']);
   }
 
-  async findSingleStudentGroupLessonAttendace(
+  //find all students' attendances in all lessons in one group
+  async findSingleGroupAllStudentsAttendace(
+    group: string,
+    page: number,
+    limit: number,
+  ) {
+    let page1: number;
+    let limit1: number;
+    page1 = +page > 0 ? +page : 1;
+    limit1 = +limit > 0 ? +limit : 30;
+    return await this.studentAttendanceModel.aggregate([
+      { $match: { group } },
+      { $sort: { date: 1 } },
+      {
+        $group: {
+          _id: '$student',
+          attendance: {
+            $push: {
+              lesson: '$_id',
+              participated: '$participated',
+              comment: '$comment',
+              admin: '$admin',
+              date: '$date',
+            },
+          },
+        },
+      },
+      { $skip: (page1 - 1) * limit1 },
+      { $limit: limit1 },
+      { $project: { student: '$_id', _id: 0, attendance: 1 } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'student',
+          foreignField: 'id',
+          as: 'student',
+        },
+      },
+      { $unwind: '$student' },
+      {
+        $project: {
+          'student.token': 0,
+          'student.password': 0,
+          'student.start_date': 0,
+          'student.role': 0,
+        },
+      },
+    ]);
+  }
+
+  //find all students' attendances in one lesson in one group
+  async findSingleLessonStudentsAttendace(group: string, lesson: string) {
+    return this.studentAttendanceModel.find({ group, lesson }).populate({
+      path: 'student admin',
+      select: '-token -password -role -start_date',
+    });
+  }
+
+  //find single student's attendance in one lesson in one group
+  async findSingleStudentSingleLessonAttendace(
     group: string,
     lesson: string,
     student: string,
   ) {
     return this.studentAttendanceModel
-      .find({ group, lesson, student })
-      .populate(['student']);
+      .findOne({ group, lesson, student })
+      .populate({
+        path: 'student admin',
+        select: '-token -password -role -start_date',
+      });
   }
+
+  //update single student's attendance in one lesson in one group
+  async updateSingleStudentSingleLessonAttendace(id: string, value: boolean) {
+    await this.studentAttendanceModel.findByIdAndUpdate(id, {
+      participated: value,
+    });
+    return { message: 'updated' };
+  }
+
+  //update all students' attendances in one lesson in one group
+  async updateSingleLessonStudentsAttendace(
+    data: UpdateStudentsAttendanceDto[],
+  ) {
+    data.forEach(async (item) => {
+      await this.studentAttendanceModel.findByIdAndUpdate(item.participate, {
+        participated: item.value,
+      });
+    });
+
+    return { message: 'updated' };
+  }
+
+  // //find all students' attendances in one lesson in one group
+  // async findSingleStudentGroupLessonAttendace(
+  //   group: string,
+  //   lesson: string,
+  //   student: string,
+  // ) {
+  //   return this.studentAttendanceModel
+  //     .find({ group, lesson, student })
+  //     .populate(['student']);
+  // }
 
   findOne(id: number) {
     return `This action returns a #${id} studentAttendance`;

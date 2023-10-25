@@ -20,7 +20,7 @@ export class LessonsService {
     if (!isValidObjectId(group)) {
       throw new BadRequestException('Invalid Group Id');
     }
-    return this.lessonModel.create({ group, number, created_date: date });
+    return this.lessonModel.create({ group, number, date });
   }
 
   async findSingleGroupAllLessons(group: string) {
@@ -28,6 +28,13 @@ export class LessonsService {
       throw new BadRequestException('Invalid Group Id');
     }
     return this.lessonModel.find({ group }).populate(['group', 'teacher']);
+  }
+
+  async findGroupAllLessonsById(group: string) {
+    if (!isValidObjectId(group)) {
+      throw new BadRequestException('Invalid Group Id');
+    }
+    return this.lessonModel.find({ group });
   }
 
   findOne(id: number) {

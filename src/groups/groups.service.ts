@@ -10,17 +10,15 @@ import { CoursesService } from '../courses/courses.service';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
 import { LessonsService } from '../lessons/lessons.service';
 import { getSelectedDaysFromDate } from '../utils/get-selected-days';
-import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectModel(Group.name)
-    private groupModel: Model<GroupDocument>,
-    private roomService: RoomsService,
-    private courseService: CoursesService,
-    private lessonService: LessonsService,
-    private studentAttendanceService: StudentAttendanceService,
+    private readonly groupModel: Model<GroupDocument>,
+    private readonly roomService: RoomsService,
+    private readonly courseService: CoursesService,
+    private readonly lessonService: LessonsService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
@@ -46,10 +44,8 @@ export class GroupsService {
       throw new BadRequestException('Group is already exists');
     }
 
-    const end_date = new Date(createGroupDto.start_date);
-    end_date.setMonth(end_date.getMonth() + course.period);
+    const group = await this.groupModel.create({ ...createGroupDto });
 
-    const group = await this.groupModel.create({ ...createGroupDto, end_date });
     const selectedDays = [];
     if (group.days) {
       selectedDays.push('monday', 'wednesday', 'friday');
@@ -59,20 +55,14 @@ export class GroupsService {
     const days = getSelectedDaysFromDate(
       selectedDays,
       group.start_date,
-      group.end_date,
+      course.period,
     );
 
+    group.end_date = days.at(-1);
+    await group.save();
+
     days.forEach(async (day, number) => {
-      const lesson = await this.lessonService.generateLesson(
-        group.id,
-        number + 1,
-        day,
-      );
-      await this.studentAttendanceService.generateAttendance(
-        group.id,
-        lesson.id,
-        day,
-      );
+      await this.lessonService.generateLesson(group.id, number + 1, day);
     });
 
     return { group };

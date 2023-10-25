@@ -1,24 +1,27 @@
-import moment from 'moment';
-
 export function getSelectedDaysFromDate(
   selectedDays: string[],
   fromDate: string,
-  toDate: string,
+  number_of_lessons: number,
 ) {
-  const startDate = moment(fromDate);
-  const endDate = moment(toDate);
+  const current = new Date(fromDate);
+  const daysOfWeek = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
 
   const result = [];
 
-  let current = startDate.clone();
-
-  while (current.isSameOrBefore(endDate, 'day')) {
-    const dayName = current.format('dddd').toLowerCase();
-    if (selectedDays.includes(dayName)) {
-      result.push(current.format('YYYY-MM-DD'));
+  while (result.length < number_of_lessons) {
+    const day = daysOfWeek[current.getDay()];
+    if (selectedDays.includes(day)) {
+      result.push(current.toISOString());
     }
-    current.add(1, 'days');
+    current.setDate(current.getDate() + 1);
   }
-
   return result;
 }

@@ -110,6 +110,15 @@ export class AdminService {
   //----------------------- UPDATE USER -----------------------------//
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    Object.defineProperties(updateUserDto, {
+      _id: { enumerable: false },
+      token: { enumerable: false },
+      password: { enumerable: false },
+      role: { enumerable: false },
+      start_date: { enumerable: false },
+      status: { enumerable: false },
+      id: { enumerable: false },
+    });
     const valid = isValidObjectId(id);
     if (!valid) {
       throw new BadRequestException('Invalid id');
