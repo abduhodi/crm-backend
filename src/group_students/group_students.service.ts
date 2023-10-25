@@ -76,7 +76,7 @@ export class GroupStudentsService {
     const students = await this.groupStudentModel
       .find({ group })
       .populate('student');
-    return { students: students.map((st) => st.student) };
+    return { students };
   }
 
   // async fetchSingleRoom(id: string) {
