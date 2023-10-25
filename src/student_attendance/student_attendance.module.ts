@@ -15,7 +15,7 @@ import { GroupStudentsModule } from '../group_students/group_students.module';
       { name: StudentAttendance.name, schema: StudentAttendanceSchema },
     ]),
     forwardRef(() => UsersModule),
-    // forwardRef(() => GroupStudentsModule),
+    forwardRef(() => GroupStudentsModule),
   ],
   controllers: [StudentAttendanceController],
   providers: [StudentAttendanceService],

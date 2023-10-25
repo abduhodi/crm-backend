@@ -73,10 +73,12 @@ export class GroupStudentsService {
   }
 
   async fetchGroupAllStudents(group: string) {
-    const students = await this.groupStudentModel
-      .find({ group })
-      .populate('student');
-    return { students };
+    console.log(group);
+    const students = await this.groupStudentModel.find({}).populate('student');
+    console.log(students);
+    return {
+      students: students.filter((item) => item.group.toString() === group),
+    };
   }
 
   // async fetchSingleRoom(id: string) {
