@@ -8,6 +8,9 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { CoursesService } from '../courses/courses.service';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
+import { LessonsService } from '../lessons/lessons.service';
+import { getSelectedDaysFromDate } from '../utils/get-selected-days';
+import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
 
 @Injectable()
 export class GroupsService {
@@ -16,6 +19,8 @@ export class GroupsService {
     private groupModel: Model<GroupDocument>,
     private roomService: RoomsService,
     private courseService: CoursesService,
+    private lessonService: LessonsService,
+    private studentAttendanceService: StudentAttendanceService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
@@ -45,6 +50,31 @@ export class GroupsService {
     end_date.setMonth(end_date.getMonth() + course.period);
 
     const group = await this.groupModel.create({ ...createGroupDto, end_date });
+    const selectedDays = [];
+    if (group.days) {
+      selectedDays.push('monday', 'wednesday', 'friday');
+    } else {
+      selectedDays.push('tuesday', 'thursday', 'saturday');
+    }
+    const days = getSelectedDaysFromDate(
+      selectedDays,
+      group.start_date,
+      group.end_date,
+    );
+
+    days.forEach(async (day, number) => {
+      const lesson = await this.lessonService.generateLesson(
+        group.id,
+        number + 1,
+        day,
+      );
+      await this.studentAttendanceService.generateAttendance(
+        group.id,
+        lesson.id,
+        day,
+      );
+    });
+
     return { group };
   }
 
@@ -124,7 +154,9 @@ export class GroupsService {
     if (!isValidId) {
       throw new BadRequestException('Invalid id');
     }
-    const group = await this.groupModel.findById(id);
+    const group = await this.groupModel
+      .findById(id)
+      .populate(['course', 'room']);
     return { group };
   }
 

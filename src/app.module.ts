@@ -18,6 +18,8 @@ import { GroupStudentsModule } from './group_students/group_students.module';
 import { CourseTeachersModule } from './course_teachers/course_teachers.module';
 import { GroupTeachersModule } from './group_teachers/group_teachers.module';
 import { RolesModule } from './roles/roles.module';
+import { LessonsModule } from './lessons/lessons.module';
+import { StudentAttendanceModule } from './student_attendance/student_attendance.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { RolesModule } from './roles/roles.module';
     CourseTeachersModule,
     GroupTeachersModule,
     RolesModule,
+    LessonsModule,
+    StudentAttendanceModule,
   ],
   controllers: [],
   providers: [],

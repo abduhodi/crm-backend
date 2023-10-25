@@ -7,14 +7,12 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
-  Req,
   Query,
   Delete,
 } from '@nestjs/common';
 import { DirectorService } from './director.service';
 import {
   ApiBearerAuth,
-  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,

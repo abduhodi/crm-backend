@@ -8,6 +8,7 @@ import {
 import { UsersModule } from '../users/users.module';
 import { AdminsModule } from '../admins/admins.module';
 import { GroupsModule } from '../groups/groups.module';
+import { StudentsModule } from '../students/students.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GroupsModule } from '../groups/groups.module';
     forwardRef(() => UsersModule),
     forwardRef(() => AdminsModule),
     forwardRef(() => GroupsModule),
+    forwardRef(() => StudentsModule),
   ],
   providers: [GroupStudentsService],
   exports: [GroupStudentsService],

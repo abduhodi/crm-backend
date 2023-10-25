@@ -28,7 +28,6 @@ export class StudentsService {
       throw new BadRequestException('Phone number is already registered');
 
     const newUser = await this.userModel.create({
-      // id: lastId[0] + 1,
       ...createUserDto,
       role: 'student',
       password: bcrypt.hashSync(createUserDto.phone, 7),

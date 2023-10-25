@@ -72,6 +72,13 @@ export class GroupStudentsService {
     return { group: group_students, count };
   }
 
+  async fetchGroupAllStudents(group: string) {
+    const students = await this.groupStudentModel
+      .find({ group })
+      .populate('student');
+    return { students: students.map((st) => st.student) };
+  }
+
   // async fetchSingleRoom(id: string) {
   //   const isValidId = isValidObjectId(id);
   //   if (!isValidId) {

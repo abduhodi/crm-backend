@@ -189,7 +189,7 @@ export class GroupsController {
 
   // ------------------------------FETCH ALL GROUP STUDENTS-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
-  @ApiOperation({ summary: 'get all group students' })
+  @ApiOperation({ summary: 'get all students of single group' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'successfully returned',
@@ -199,9 +199,9 @@ export class GroupsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  @Get('all-students/:q')
-  findAllStudentsGroups(@Query() q: any) {
-    return this.groupStudentsService.fetchAll(q?.page, q?.limit);
+  @Get('all-students/:id')
+  findAllStudentsGroups(@Param('id') id: string) {
+    return this.groupStudentsService.fetchGroupAllStudents(id);
   }
 
   // @Get(':id')

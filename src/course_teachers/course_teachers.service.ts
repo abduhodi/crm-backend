@@ -64,7 +64,7 @@ export class CourseTeachersService {
       .find({ course })
       .populate(['course', 'teacher']);
 
-    return { teachers: teachers.map((item) => item.teacher) };
+    return { teachers: teachers.map((item) => item?.teacher) };
   }
 
   //----------------------- FIND TEACHER IN ONE COURSE -----------------------------//
@@ -73,11 +73,11 @@ export class CourseTeachersService {
     return this.courseTeacherModel.findOne({ course, teacher });
   }
 
-  //----------------------- UPDATE TEACHER IN ONE COURSE -----------------------------//
+  // //----------------------- UPDATE TEACHER IN ONE COURSE -----------------------------//
 
-  update(updateDto: CreateCourseTeacherDto) {
-    return `This action updates a courseTeacher`;
-  }
+  // update(updateDto: CreateCourseTeacherDto) {
+  //   return `This action updates a courseTeacher`;
+  // }
 
   //----------------------- DELETE TEACHER FROM ONE COURSE -----------------------------//
 

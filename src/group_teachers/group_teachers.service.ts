@@ -80,9 +80,10 @@ export class GroupTeachersService {
   //----------------------- FIND TEACHER ALL GROUPS -----------------------------//
 
   async findAllGroups(id: string) {
-    const groups = await this.groupTeacherModel
-      .find({ teacher: id })
-      .populate('group');
+    const groups = await this.groupTeacherModel.find({ teacher: id }).populate({
+      path: 'group',
+      populate: ['room', 'course'],
+    });
     return { groups: groups.map((item) => item.group) };
   }
 

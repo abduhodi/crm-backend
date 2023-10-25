@@ -26,7 +26,6 @@ import { ROLE } from '../enums/role.enum';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { SelfGuard } from '../guards/self.guard';
 import { Response, query } from 'express';
-import { UsersService } from '../users/users.service';
 
 @Controller('admin')
 @ApiTags('Admins')
@@ -34,10 +33,7 @@ import { UsersService } from '../users/users.service';
 @UseGuards(AuthGuard, RolesGuard)
 @Roles(ROLE.ADMIN)
 export class AdminsController {
-  constructor(
-    private readonly adminsService: AdminService,
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly adminsService: AdminService) {}
 
   //-------------- ADD NEW STUDENT --------------------//
 

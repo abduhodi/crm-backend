@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -11,7 +10,6 @@ import {
   HttpCode,
   Query,
   Put,
-  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,

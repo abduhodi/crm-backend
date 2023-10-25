@@ -8,7 +8,6 @@ import { uploadFile } from '../utils/file-upload';
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateProfileDto } from './dto/profile-update.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
@@ -94,7 +93,6 @@ export class UsersService {
       start_date: { enumerable: false },
       status: { enumerable: false },
     });
-    console.log(updateUserDto);
     const id = req?.user?.id;
     const valid = isValidObjectId(id);
     if (!valid) {

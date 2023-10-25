@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -11,7 +10,6 @@ import {
   HttpCode,
   Query,
   Put,
-  Req,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import {
@@ -25,7 +23,6 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
-import { CreateCourseTeacherDto } from '../course_teachers/dto/create-course_teacher.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { GroupTeachersService } from '../group_teachers/group_teachers.service';
@@ -65,7 +62,7 @@ export class TeachersController {
     return this.teachersService.createTeacher(createTeacherDto);
   }
 
-  //----------------------- FIND All TEACHER -----------------------------//
+  //----------------------- FIND All TEACHERS -----------------------------//
 
   @Roles(ROLE.DIRECTOR, ROLE.ADMIN)
   @ApiOperation({ summary: 'Find All Teachers' })
@@ -117,9 +114,9 @@ export class TeachersController {
     return this.teachersService.findOneTeacher(id);
   }
 
-  // ------------------------------FETCH ALL GROUP TEACHERS-----------------------------//
+  // ------------------------------FETCH TEACHER'S ALL GROUPS-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
-  @ApiOperation({ summary: 'get all group teachers' })
+  @ApiOperation({ summary: 'get all groups of single teacher' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'successfully returned',
