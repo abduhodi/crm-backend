@@ -271,11 +271,11 @@ export class GroupsController {
   @Post('attendance/:group')
   findGroupOneDayAllStudentsAttendance(
     @Param() params: any,
-    @Body() date: string,
+    @Body() date: { date: string },
   ) {
     return this.studentAttendanceService.findSingleDayStudentsAttendace(
       params?.group,
-      date,
+      date?.date,
     );
   }
 
