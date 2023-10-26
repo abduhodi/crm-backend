@@ -11,16 +11,21 @@ import { GetFreeRoomDto } from './dto/get-free-room.dto';
 import { LessonsService } from '../lessons/lessons.service';
 import { getSelectedDaysFromDate } from '../utils/get-selected-days';
 import { GroupTeachersService } from '../group_teachers/group_teachers.service';
+import {
+  GroupTeacher,
+  GroupTeacherDocument,
+} from '../group_teachers/schemas/group_teacher.schema';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectModel(Group.name)
     private readonly groupModel: Model<GroupDocument>,
+    @InjectModel(GroupTeacher.name)
+    private readonly groupTeachersModel: Model<GroupTeacherDocument>,
     private readonly roomService: RoomsService,
     private readonly courseService: CoursesService,
     private readonly lessonService: LessonsService,
-    private readonly groupTeachersService: GroupTeachersService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
@@ -83,7 +88,10 @@ export class GroupsService {
       .populate(['course', 'room']);
     const count = await this.groupModel.count({});
     groups.forEach(async (gr) => {
-      const teachers = await this.groupTeachersService.findAllTeachers(gr?.id);
+      const teachers = await this.groupTeachersModel
+        .find({ group: gr?.id })
+        .populate('teacher')
+        .select('teacher');
       gr['teachers'] = teachers;
     });
     return { groups, count };
@@ -154,7 +162,10 @@ export class GroupsService {
       .findById(id)
       .populate(['course', 'room']);
 
-    const teachers = await this.groupTeachersService.findAllTeachers(id);
+    const teachers = await this.groupTeachersModel
+      .find({ group: id })
+      .populate('teacher')
+      .select('teacher');
     group['teachers'] = teachers;
     return { group };
   }
