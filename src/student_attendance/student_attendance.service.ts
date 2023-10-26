@@ -91,15 +91,15 @@ export class StudentAttendanceService {
         },
       },
       { $unwind: '$student' },
-      { $unwind: '$attendance' },
-      {
-        $lookup: {
-          from: 'lessons',
-          localField: 'attendance.lesson',
-          foreignField: '_id',
-          as: 'populated_lesson',
-        },
-      },
+      // { $unwind: '$attendance' },
+      // {
+      //   $lookup: {
+      //     from: 'lessons',
+      //     localField: 'attendance.lesson',
+      //     foreignField: '_id',
+      //     as: 'populated_lesson',
+      //   },
+      // },
       {
         $project: {
           'student.token': 0,
