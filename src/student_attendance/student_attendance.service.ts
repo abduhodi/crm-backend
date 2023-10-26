@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateStudentAttendanceDto } from './dto/update-student_attendance.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -121,10 +121,14 @@ export class StudentAttendanceService {
 
   //find all students' attendances in one day in one group
   async findSingleDayStudentsAttendace(group: string, date: string) {
-    return this.studentAttendanceModel.find({ group, date }).populate({
-      path: 'student admin',
-      select: '-token -password -role -start_date',
-    });
+    try {
+      return this.studentAttendanceModel.find({ group, date }).populate({
+        path: 'student admin',
+        select: '-token -password -role -start_date',
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   //find single student's attendance in one lesson in one group

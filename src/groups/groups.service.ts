@@ -10,6 +10,7 @@ import { CoursesService } from '../courses/courses.service';
 import { GetFreeRoomDto } from './dto/get-free-room.dto';
 import { LessonsService } from '../lessons/lessons.service';
 import { getSelectedDaysFromDate } from '../utils/get-selected-days';
+import { GroupTeachersService } from '../group_teachers/group_teachers.service';
 
 @Injectable()
 export class GroupsService {
@@ -19,6 +20,7 @@ export class GroupsService {
     private readonly roomService: RoomsService,
     private readonly courseService: CoursesService,
     private readonly lessonService: LessonsService,
+    private readonly groupTeachersService: GroupTeachersService,
   ) {}
 
   async createGroup(createGroupDto: CreateGroupDto) {
@@ -80,6 +82,10 @@ export class GroupsService {
       .limit(limit1)
       .populate(['course', 'room']);
     const count = await this.groupModel.count({});
+    groups.forEach(async (gr) => {
+      const teachers = await this.groupTeachersService.findAllTeachers(gr?.id);
+      gr['teachers'] = teachers;
+    });
     return { groups, count };
   }
 
@@ -147,6 +153,9 @@ export class GroupsService {
     const group = await this.groupModel
       .findById(id)
       .populate(['course', 'room']);
+
+    const teachers = await this.groupTeachersService.findAllTeachers(id);
+    group['teachers'] = teachers;
     return { group };
   }
 

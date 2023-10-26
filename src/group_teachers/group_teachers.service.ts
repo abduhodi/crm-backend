@@ -70,10 +70,11 @@ export class GroupTeachersService {
   //----------------------- FIND ALL TEACHERS IN ONE GROUP -----------------------------//
 
   async findAllTeachers(id: string) {
-    const groups = await this.groupTeacherModel
+    const teachers = await this.groupTeacherModel
       .find({ group: id })
-      .populate('teacher');
-    return { teachers: groups.map((item) => item.teacher) };
+      .populate('teacher')
+      .select('teacher');
+    return { teachers };
   }
 
   //----------------------- FIND TEACHER ALL GROUPS -----------------------------//
