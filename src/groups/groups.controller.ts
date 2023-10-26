@@ -268,7 +268,7 @@ export class GroupsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  @Get('attendance/:group')
+  @Post('attendance/:group')
   findGroupOneDayAllStudentsAttendance(
     @Param() params: any,
     @Body() date: string,
