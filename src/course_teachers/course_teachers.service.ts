@@ -46,7 +46,10 @@ export class CourseTeachersService {
 
     const newMember = (
       await this.courseTeacherModel.create(createCourseTeacherDto)
-    ).populate(['course', 'teacher']);
+    ).populate({
+      path: 'course teacher',
+      select: '_id first_name last_name image',
+    });
 
     return { response: newMember };
   }
@@ -54,15 +57,19 @@ export class CourseTeachersService {
   //----------------------- FIND ALL TEACHERS IN ALL COURSES -----------------------------//
 
   findAll() {
-    return this.courseTeacherModel.find();
+    return this.courseTeacherModel.find().populate({
+      path: 'course teacher',
+      select: '_id first_name last_name image',
+    });
   }
 
   //----------------------- FIND ALL TEACHERS IN ONE COURSE -----------------------------//
 
   async findAllTeachersOfCourse(course: string) {
-    const teachers = await this.courseTeacherModel
-      .find({ course })
-      .populate(['course', 'teacher']);
+    const teachers = await this.courseTeacherModel.find({ course }).populate({
+      path: 'course teacher',
+      select: '_id first_name last_name image',
+    });
 
     return { teachers: teachers.map((item) => item?.teacher) };
   }
@@ -70,7 +77,10 @@ export class CourseTeachersService {
   //----------------------- FIND TEACHER IN ONE COURSE -----------------------------//
 
   findCourseMemberTeacher(course: string, teacher: string) {
-    return this.courseTeacherModel.findOne({ course, teacher });
+    return this.courseTeacherModel.findOne({ course, teacher }).populate({
+      path: 'course teacher',
+      select: '_id first_name last_name image',
+    });
   }
 
   // //----------------------- UPDATE TEACHER IN ONE COURSE -----------------------------//
