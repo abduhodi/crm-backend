@@ -34,6 +34,7 @@ import { CreateGroupTeacherDto } from '../group_teachers/dto/create-group_teache
 import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
 import { UpdateStudentsAttendanceDto } from '../student_attendance/dto/update-many.dto';
 import { UpdateAttendanceDto } from '../student_attendance/dto/update-one.dto';
+import { UpdateStudentsAttendance2Dto } from '../student_attendance/dto/update-many2.dto';
 
 @ApiBearerAuth()
 @ApiTags('Groups')
@@ -319,7 +320,7 @@ export class GroupsController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
   @Put('attendance/update/lesson')
   updateGroupLessonAllStudentsAttendance(
-    @Body() data: UpdateStudentsAttendanceDto[],
+    @Body() data: UpdateStudentsAttendance2Dto[],
   ) {
     return this.studentAttendanceService.updateSingleLessonStudentsAttendace(
       data,

@@ -11,6 +11,7 @@ import {
   GroupStudentsDocument,
 } from '../group_students/schemas/group_student.schema';
 import { UpdateStudentsAttendanceDto } from './dto/update-many.dto';
+import { UpdateStudentsAttendance2Dto } from './dto/update-many2.dto';
 
 @Injectable()
 export class StudentAttendanceService {
@@ -90,6 +91,15 @@ export class StudentAttendanceService {
         },
       },
       { $unwind: '$student' },
+      { $unwind: '$attendance' },
+      {
+        $lookup: {
+          from: 'lessons',
+          localField: 'attendance.lesson',
+          foreignField: '_id',
+          as: 'populated_lesson',
+        },
+      },
       {
         $project: {
           'student.token': 0,
@@ -133,16 +143,32 @@ export class StudentAttendanceService {
 
   //update all students' attendances in one lesson in one group
   async updateSingleLessonStudentsAttendace(
-    data: UpdateStudentsAttendanceDto[],
+    data: UpdateStudentsAttendance2Dto[],
   ) {
     data.forEach(async (item) => {
-      await this.studentAttendanceModel.findByIdAndUpdate(item.participate, {
-        participated: item.value,
-      });
+      await this.studentAttendanceModel.findOneAndUpdate(
+        { student: item.student, lesson: item.lesson },
+        {
+          participated: item.value,
+        },
+      );
     });
 
     return { message: 'updated' };
   }
+
+  // //update all students' attendances in one lesson in one group
+  // async updateSingleLessonStudentsAttendace(
+  //   data: UpdateStudentsAttendanceDto[],
+  // ) {
+  //   data.forEach(async (item) => {
+  //     await this.studentAttendanceModel.findByIdAndUpdate(item.participate, {
+  //       participated: item.value,
+  //     });
+  //   });
+
+  //   return { message: 'updated' };
+  // }
 
   // //find all students' attendances in one lesson in one group
   // async findSingleStudentGroupLessonAttendace(
