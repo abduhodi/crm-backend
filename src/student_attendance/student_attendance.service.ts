@@ -119,6 +119,14 @@ export class StudentAttendanceService {
     });
   }
 
+  //find all students' attendances in one day in one group
+  async findSingleDayStudentsAttendace(group: string, date: string) {
+    return this.studentAttendanceModel.find({ group, date }).populate({
+      path: 'student admin',
+      select: '-token -password -role -start_date',
+    });
+  }
+
   //find single student's attendance in one lesson in one group
   async findSingleStudentSingleLessonAttendace(
     group: string,

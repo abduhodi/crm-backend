@@ -254,6 +254,28 @@ export class GroupsController {
     );
   }
 
+  // ------------------------------FETCH ONE GROUP'S ALL STUDENTS' ATTENDANCES IN ONE DAY-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
+  @ApiOperation({
+    summary: "get all students' attendances in one day of single group",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('attendance/:group/:date')
+  findGroupOneDayAllStudentsAttendance(@Param() params: any) {
+    return this.studentAttendanceService.findSingleDayStudentsAttendace(
+      params?.group,
+      params?.date,
+    );
+  }
+
   // ------------------------------FETCH ONE GROUP'S ONE STUDENT'S ATTENDANCE IN ONE LESSON-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR, ROLE.TEACHER)
   @ApiOperation({
