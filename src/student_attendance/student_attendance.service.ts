@@ -154,10 +154,10 @@ export class StudentAttendanceService {
   }
 
   //update all students' attendances in one lesson in one group
-  async updateSingleLessonStudentsAttendace(
-    data: UpdateStudentsAttendanceDto[],
-  ) {
-    data.forEach(async (item) => {
+  async updateSingleLessonStudentsAttendace(data: {
+    data: UpdateStudentsAttendanceDto[];
+  }) {
+    data.data.forEach(async (item) => {
       await this.studentAttendanceModel.findByIdAndUpdate(item._id, {
         participated: item.participated,
       });
