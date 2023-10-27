@@ -32,7 +32,7 @@ import { Request } from 'express';
 import { UpdateLessonCommentDto } from './dto/update-comment.dto';
 
 @ApiBearerAuth()
-@ApiTags('Groups')
+@ApiTags('Lessons')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('lessons')
 export class LessonsController {
@@ -122,7 +122,7 @@ export class LessonsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
-  @Put('lesson/attendance/:id')
+  @Put('lesson/comment/:id')
   updateLesson(
     @Param('id') id: string,
     @Body() updateLessonDto: UpdateLessonCommentDto,

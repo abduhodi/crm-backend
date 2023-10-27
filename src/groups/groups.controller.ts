@@ -343,6 +343,7 @@ export class GroupsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Post('attendance/update/lesson')
   updateGroupLessonAllStudentsAttendance(
     @Body() data: { data: UpdateStudentsAttendanceDto[] },
