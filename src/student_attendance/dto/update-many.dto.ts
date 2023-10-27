@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, Validate } from 'class-validator';
+import { isValidObjectId } from 'mongoose';
 
 export class UpdateStudentsAttendanceDto {
   @ApiProperty({
@@ -8,12 +9,13 @@ export class UpdateStudentsAttendanceDto {
   })
   @IsString()
   @IsNotEmpty()
-  participate: string;
+  @Validate(isValidObjectId)
+  _id: string;
 
   @ApiProperty({
     type: Boolean,
     required: true,
   })
   @IsBoolean()
-  value: boolean;
+  participated: boolean;
 }

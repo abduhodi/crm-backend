@@ -87,13 +87,6 @@ export class GroupsService {
       .limit(limit1)
       .populate(['course', 'room']);
     const count = await this.groupModel.count({});
-    groups.forEach(async (gr) => {
-      const teachers = await this.groupTeachersModel
-        .find({ group: gr?.id })
-        .populate('teacher')
-        .select('teacher');
-      gr['teachers'] = teachers;
-    });
     return { groups, count };
   }
 

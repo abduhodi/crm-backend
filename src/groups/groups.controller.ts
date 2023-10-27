@@ -345,7 +345,7 @@ export class GroupsController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
   @Put('attendance/update/lesson')
   updateGroupLessonAllStudentsAttendance(
-    @Body() data: UpdateStudentsAttendance2Dto[],
+    @Body() data: UpdateStudentsAttendanceDto[],
   ) {
     return this.studentAttendanceService.updateSingleLessonStudentsAttendace(
       data,
