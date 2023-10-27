@@ -40,10 +40,11 @@ export class LessonsService {
         path: 'group teacher',
         select: '-token -password -start_date',
       })
+      .sort('number : 1')
       .skip((page1 - 1) * limit1)
       .limit(limit1);
 
-    const count = await this.lessonModel.count({});
+    const count = await this.lessonModel.count({ group });
 
     return { lessons, count };
   }
@@ -110,7 +111,7 @@ export class LessonsService {
     await this.lessonModel.findByIdAndUpdate(id, {
       $set: { admin, description: dto.description },
     });
-    return { message: 'Lesson marked as passed' };
+    return { message: 'Lesson comment added' };
   }
 
   // findOne(id: string) {

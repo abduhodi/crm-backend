@@ -102,6 +102,7 @@ export class LessonsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Put('lesson/attendance/:id')
   markAttendance(
     @Param('id') id: string,
@@ -122,6 +123,7 @@ export class LessonsController {
     description: 'token is not found',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Put('lesson/comment/:id')
   updateLesson(
     @Param('id') id: string,
