@@ -1,20 +1,19 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './schemas/course.schema';
 import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { GroupsService } from '../groups/groups.service';
+import { Group } from '../groups/schemas/group.schema';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectModel(Course.name)
     private courseModel: Model<Course>,
+    @InjectModel(Group.name)
+    private groupModel: Model<Group>,
   ) {}
 
   async createCourse(createCourseDto: CreateCourseDto) {
@@ -81,6 +80,9 @@ export class CoursesService {
       throw new BadRequestException('Invalid id. Course is not exists');
     }
     await course.deleteOne();
+
+    await this.groupModel.deleteMany({ course: id });
+
     return { message: 'deleted successfully' };
   }
 }
