@@ -90,6 +90,21 @@ export class GroupsService {
     return { groups, count };
   }
 
+  async fetchCourseGroups(course: string, page: number, limit: number) {
+    let page1: number;
+    let limit1: number;
+    page1 = +page > 0 ? +page : 1;
+    limit1 = +limit > 0 ? +limit : null;
+
+    const groups = await this.groupModel
+      .find({ course })
+      .skip((page1 - 1) * limit1)
+      .limit(limit1)
+      .populate(['room']);
+    const count = await this.groupModel.count({ course });
+    return { groups, count };
+  }
+
   async fetchAvailableRooms(getFreeRoomDto: GetFreeRoomDto) {
     const groups = await this.groupModel.find({
       end_date: {
@@ -193,6 +208,15 @@ export class GroupsService {
       throw new BadRequestException('Invalid id. Group does not exist');
     }
     await group.deleteOne();
+    return { message: 'deleted successfully' };
+  }
+
+  async removeManyGroup(id: string) {
+    const isValidId = isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid id');
+    }
+    await this.groupModel.deleteMany({ course: id });
     return { message: 'deleted successfully' };
   }
 }

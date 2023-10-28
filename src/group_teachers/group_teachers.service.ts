@@ -39,7 +39,8 @@ export class GroupTeachersService {
     }
     const isTeachCourseMember =
       await this.courseTeachersService.findCourseMemberTeacher(
-        groupData.course,
+        //@ts-ignore
+        groupData.course?._id?.toString(),
         teacherData.id,
       );
     if (!isTeachCourseMember) {
@@ -80,10 +81,14 @@ export class GroupTeachersService {
   //----------------------- FIND TEACHER ALL GROUPS -----------------------------//
 
   async findAllGroups(id: string) {
-    const groups = await this.groupTeacherModel.find({ teacher: id }).populate({
-      path: 'group',
-      populate: ['room', 'course'],
-    });
+    const groups = await this.groupTeacherModel
+      .find({ teacher: id })
+      .populate({
+        path: 'group',
+        populate: 'room course',
+      })
+      .select('group');
+
     return { groups: groups.map((item) => item.group) };
   }
 

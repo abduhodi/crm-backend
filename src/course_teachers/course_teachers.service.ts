@@ -44,12 +44,9 @@ export class CourseTeachersService {
       throw new BadRequestException('Teacher is already added to this Course');
     }
 
-    const newMember = (
-      await this.courseTeacherModel.create(createCourseTeacherDto)
-    ).populate({
-      path: 'course teacher',
-      select: '_id first_name last_name image',
-    });
+    const newMember = await this.courseTeacherModel.create(
+      createCourseTeacherDto,
+    );
 
     return { response: newMember };
   }

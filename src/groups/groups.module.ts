@@ -33,7 +33,6 @@ import {
     forwardRef(() => TeachersModule),
     forwardRef(() => DirectorModule),
     forwardRef(() => CoursesModule),
-    forwardRef(() => GroupsModule),
     forwardRef(() => RoomsModule),
     forwardRef(() => GroupStudentsModule),
     forwardRef(() => GroupTeachersModule),

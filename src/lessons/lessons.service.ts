@@ -40,7 +40,7 @@ export class LessonsService {
         path: 'group teacher',
         select: '-token -password -start_date',
       })
-      .sort('number : 1')
+      .sort('date : 1')
       .skip((page1 - 1) * limit1)
       .limit(limit1);
 

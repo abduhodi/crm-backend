@@ -15,7 +15,6 @@ export class RoomValidator implements ValidatorConstraintInterface {
     id: any,
     validationArguments?: ValidationArguments,
   ): Promise<boolean> {
-    console.log(id, 'validator');
     const isRoom = await this.roomService.fetchSingleRoom(id);
     if (isRoom) return true;
     return false;

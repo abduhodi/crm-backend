@@ -87,6 +87,23 @@ export class GroupsController {
     return this.groupsService.fetchAllGroups(q?.page, q?.limit);
   }
 
+  // ------------------------------FETCH ALL GROUPS OF SINGLE COURSE-----------------------------//
+  @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
+  @ApiOperation({ summary: 'fetch all groups of single course' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'token is not found',
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
+  @Get('course/:id/:q')
+  findCourseGroups(@Param('id') id: string, @Query() q: any) {
+    return this.groupsService.fetchCourseGroups(id, q?.page, q?.limit);
+  }
+
   // ------------------------------FETCH ALL AVAILABLE ROOM-----------------------------//
   @Roles(ROLE.ADMIN, ROLE.DIRECTOR)
   @ApiOperation({ summary: 'fetch all avaliable rooms' })

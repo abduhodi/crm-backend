@@ -16,10 +16,14 @@ import { GroupTeachersModule } from '../group_teachers/group_teachers.module';
 import { RolesModule } from '../roles/roles.module';
 import { LessonsModule } from '../lessons/lessons.module';
 import { StudentAttendanceModule } from '../student_attendance/student_attendance.module';
+import { Group, GroupSchema } from '../groups/schemas/group.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Course.name, schema: CourseSchema }]),
+    MongooseModule.forFeature([
+      { name: Course.name, schema: CourseSchema },
+      { name: Group.name, schema: GroupSchema },
+    ]),
     forwardRef(() => UsersModule),
     forwardRef(() => AdminsModule),
     forwardRef(() => StudentsModule),

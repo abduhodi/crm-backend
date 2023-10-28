@@ -91,15 +91,6 @@ export class StudentAttendanceService {
         },
       },
       { $unwind: '$student' },
-      // { $unwind: '$attendance' },
-      // {
-      //   $lookup: {
-      //     from: 'lessons',
-      //     localField: 'attendance.lesson',
-      //     foreignField: '_id',
-      //     as: 'populated_lesson',
-      //   },
-      // },
       {
         $project: {
           'student.token': 0,
@@ -114,7 +105,7 @@ export class StudentAttendanceService {
   //find all students' attendances in one lesson in one group
   async findSingleLessonStudentsAttendace(group: string, lesson: string) {
     return this.studentAttendanceModel.find({ group, lesson }).populate({
-      path: 'student admin',
+      path: 'student admin lesson',
       select: '-token -password -role -start_date',
     });
   }
@@ -123,7 +114,7 @@ export class StudentAttendanceService {
   async findSingleDayStudentsAttendace(group: string, date: string) {
     try {
       return this.studentAttendanceModel.find({ group, date }).populate({
-        path: 'student admin',
+        path: 'student admin lesson',
         select: '-token -password -role -start_date',
       });
     } catch (error) {
@@ -157,13 +148,17 @@ export class StudentAttendanceService {
   async updateSingleLessonStudentsAttendace(data: {
     data: UpdateStudentsAttendanceDto[];
   }) {
-    data.data.forEach(async (item) => {
-      await this.studentAttendanceModel.findByIdAndUpdate(item._id, {
-        participated: item.participated,
+    try {
+      data.data.forEach(async (item) => {
+        await this.studentAttendanceModel.findByIdAndUpdate(item._id, {
+          participated: item.participated,
+        });
       });
-    });
 
-    return { message: 'updated' };
+      return { message: 'updated' };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   // //update all students' attendances in one lesson in one group
