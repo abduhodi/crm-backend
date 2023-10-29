@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 
 export class UpdateLessonCommentDto {
   @ApiProperty({
@@ -9,4 +9,16 @@ export class UpdateLessonCommentDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+  })
+  paid?: boolean;
+
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
+  duration?: number;
 }

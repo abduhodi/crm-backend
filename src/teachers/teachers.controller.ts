@@ -10,6 +10,9 @@ import {
   HttpCode,
   Query,
   Put,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import {
@@ -18,6 +21,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBody,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -26,6 +30,9 @@ import { ROLE } from '../enums/role.enum';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { GroupTeachersService } from '../group_teachers/group_teachers.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadDto } from '../users/dto/file-upload.dto';
+import { ValidVideoValidator } from '../validators/video.validator';
 
 @ApiTags('Teachers')
 @ApiBearerAuth()
@@ -36,6 +43,40 @@ export class TeachersController {
     private readonly teachersService: TeachersService,
     private readonly groupTeachersService: GroupTeachersService,
   ) {}
+
+  //-------------- UPLOAD VIDEO --------------------//
+  @Roles(ROLE.TEACHER)
+  @UseInterceptors(FileInterceptor('video'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'video (mp4)*',
+    type: FileUploadDto,
+  })
+  @ApiOperation({ summary: 'Upload new video' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'succesfully uploaded',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid video',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @Post('upload-video')
+  @HttpCode(HttpStatus.CREATED)
+  uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new ValidVideoValidator({})],
+      }),
+    )
+    video: FileUploadDto,
+  ): any {
+    return this.teachersService.uploadVideo(video);
+  }
 
   //----------------------- ADD TEACHER -----------------------------//
   @Roles(ROLE.DIRECTOR)

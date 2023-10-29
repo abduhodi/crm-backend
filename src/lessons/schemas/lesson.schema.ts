@@ -48,6 +48,19 @@ export class Lesson {
   pass: boolean;
 
   @Prop({
+    type: Number,
+    require: true,
+  })
+  duration: number;
+
+  @Prop({
+    type: Boolean,
+    require: true,
+    default: true,
+  })
+  paid: boolean;
+
+  @Prop({
     type: String,
     require: false,
     default: null,

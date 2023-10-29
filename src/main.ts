@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
+import * as bodyParser from 'body-parser';
 console.log(bcrypt.hashSync('12345', 7));
 async function run() {
   try {

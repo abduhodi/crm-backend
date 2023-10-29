@@ -6,6 +6,7 @@ import { User } from '../users/schemas/user.schema';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { uploadFile } from '../utils/file-upload';
 
 @Injectable()
 export class TeachersService {
@@ -13,6 +14,17 @@ export class TeachersService {
     @InjectModel(User.name)
     private userModel: Model<User>,
   ) {}
+
+  //----------------------- UPLOAD VIDEO -----------------------------//
+
+  async uploadVideo(video: any) {
+    try {
+      const filename = await uploadFile(video);
+      return { video: filename };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 
   //----------------------- CREATE TEACHER -----------------------------//
 

@@ -5,11 +5,17 @@ import { Model, isValidObjectId } from 'mongoose';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
+import {
+  GroupStudent,
+  GroupStudentsDocument,
+} from '../group_students/schemas/group_student.schema';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(GroupStudent.name)
+    private readonly groupStudentModel: Model<GroupStudentsDocument>,
   ) {}
 
   //----------------------- ADD NEW STUDENT -----------------------------//
@@ -73,6 +79,27 @@ export class StudentsService {
       .select('-password -token');
 
     return { student: user };
+  }
+
+  //----------------------- GET SINGLE STUDENT ALL GROUPS -----------------------------//
+
+  async findOneStudentGroups(id: string) {
+    const valid = isValidObjectId(id);
+    if (!valid) {
+      throw new BadRequestException('Invalid Student id');
+    }
+    const groups = await this.groupStudentModel
+      .find({ student: id })
+      .populate({
+        path: 'group',
+        populate: {
+          path: 'course room',
+          select: 'name',
+        },
+      })
+      .select('group status');
+
+    return { groups };
   }
 
   //----------------------- FIND STUDENT BY PHONE -----------------------------//

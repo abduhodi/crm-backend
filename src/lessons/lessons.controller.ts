@@ -130,11 +130,6 @@ export class LessonsController {
     @Body() updateLessonDto: UpdateLessonCommentDto,
     @Req() req: Request,
   ) {
-    return this.lessonsService.updateLeesonComment(id, updateLessonDto, req);
+    return this.lessonsService.updateLessonComment(id, updateLessonDto, req);
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.lessonsService.remove(+id);
-  // }
 }

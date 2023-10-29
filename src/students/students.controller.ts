@@ -110,6 +110,31 @@ export class StudentsController {
     return this.studentService.findOneStudent(id);
   }
 
+  //----------------------- FIND ONE STUDENT ALL GROUPS -----------------------------//
+
+  @ApiOperation({ summary: 'Find One Student all groups' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'succesfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid id',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Your Role is not as required',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Token is not found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('groups/:id')
+  findStudentGroups(@Param('id') id: string) {
+    return this.studentService.findOneStudentGroups(id);
+  }
+
   //----------------------- FIND STUDENT BY PHONE -----------------------------//
 
   @ApiOperation({ summary: 'Find Student by phone' })

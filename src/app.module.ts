@@ -20,6 +20,7 @@ import { GroupTeachersModule } from './group_teachers/group_teachers.module';
 import { RolesModule } from './roles/roles.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { StudentAttendanceModule } from './student_attendance/student_attendance.module';
+import { LessonVideosModule } from './lesson_videos/lesson_videos.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { StudentAttendanceModule } from './student_attendance/student_attendance
     RolesModule,
     LessonsModule,
     StudentAttendanceModule,
+    LessonVideosModule,
   ],
   controllers: [],
   providers: [],
