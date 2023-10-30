@@ -5,12 +5,18 @@ import { Lesson, LessonDocument } from './schemas/lesson.schema';
 import { Model, isValidObjectId } from 'mongoose';
 import { MarkAttendanceLessonDto } from './dto/mark-attendance.dto';
 import { UpdateLessonCommentDto } from './dto/update-comment.dto';
+import {
+  StudentAttendance,
+  StudentAttendanceDocument,
+} from '../student_attendance/schemas/student_attendance.schema';
 
 @Injectable()
 export class LessonsService {
   constructor(
     @InjectModel(Lesson.name)
     private readonly lessonModel: Model<LessonDocument>,
+    @InjectModel(StudentAttendance.name)
+    private readonly attendanceModel: Model<StudentAttendanceDocument>,
   ) {}
 
   async createLesson(createLessonDto: CreateLessonDto) {
@@ -136,6 +142,10 @@ export class LessonsService {
         ...dto,
         pass: false,
       });
+      await this.attendanceModel.updateMany(
+        { lesson: id },
+        { participated: false, comment: dto.description, admin },
+      );
       return { message: 'Lesson comment added' };
     } catch (error) {
       throw new BadRequestException(error.message);
