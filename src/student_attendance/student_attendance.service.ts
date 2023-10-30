@@ -12,6 +12,8 @@ import {
 } from '../group_students/schemas/group_student.schema';
 import { UpdateStudentsAttendanceDto } from './dto/update-many.dto';
 import { UpdateStudentsAttendance2Dto } from './dto/update-many2.dto';
+import { UpdateAttendanceDto } from './dto/update-one.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class StudentAttendanceService {
@@ -137,9 +139,18 @@ export class StudentAttendanceService {
   }
 
   //update single student's attendance in one lesson in one group
-  async updateSingleStudentSingleLessonAttendace(id: string, value: boolean) {
+  async updateSingleStudentSingleLessonAttendace(
+    id: string,
+    value: UpdateAttendanceDto,
+    req: any,
+  ) {
+    const admin = req?.user?.id;
+    if (!admin) {
+      throw new BadRequestException('Invalid token');
+    }
     await this.studentAttendanceModel.findByIdAndUpdate(id, {
-      participated: value,
+      ...value,
+      admin,
     });
     return { message: 'updated' };
   }

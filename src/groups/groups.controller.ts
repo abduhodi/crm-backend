@@ -11,6 +11,7 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 
 import {
@@ -34,7 +35,7 @@ import { CreateGroupTeacherDto } from '../group_teachers/dto/create-group_teache
 import { StudentAttendanceService } from '../student_attendance/student_attendance.service';
 import { UpdateStudentsAttendanceDto } from '../student_attendance/dto/update-many.dto';
 import { UpdateAttendanceDto } from '../student_attendance/dto/update-one.dto';
-import { UpdateStudentsAttendance2Dto } from '../student_attendance/dto/update-many2.dto';
+import { Request } from 'express';
 
 @ApiBearerAuth()
 @ApiTags('Groups')
@@ -338,10 +339,12 @@ export class GroupsController {
   updateGroupLessonSingleStudentAttendance(
     @Param('id') id: string,
     @Body() data: UpdateAttendanceDto,
+    @Req() req: Request,
   ) {
     return this.studentAttendanceService.updateSingleStudentSingleLessonAttendace(
       id,
-      data.value,
+      data,
+      req,
     );
   }
 

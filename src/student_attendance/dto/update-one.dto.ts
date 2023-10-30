@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateAttendanceDto {
   @ApiProperty({
@@ -7,5 +7,13 @@ export class UpdateAttendanceDto {
     required: true,
   })
   @IsBoolean()
-  value: boolean;
+  participated: boolean;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  comment: string;
 }
