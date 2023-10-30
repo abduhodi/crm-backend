@@ -119,7 +119,6 @@ export class LessonsService {
       }
       Object.defineProperties(dto, {
         _id: { enumerable: false },
-        pass: { enumerable: false },
         title: { enumerable: false },
         group: { enumerable: false },
         teacher: { enumerable: false },
