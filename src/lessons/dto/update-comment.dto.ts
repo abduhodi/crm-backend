@@ -17,12 +17,6 @@ export class UpdateLessonCommentDto {
   paid?: boolean;
 
   @ApiProperty({
-    type: Boolean,
-    required: false,
-  })
-  pass?: boolean;
-
-  @ApiProperty({
     type: Number,
     required: false,
   })

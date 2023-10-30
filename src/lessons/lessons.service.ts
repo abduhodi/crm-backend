@@ -119,6 +119,7 @@ export class LessonsService {
       }
       Object.defineProperties(dto, {
         _id: { enumerable: false },
+        pass: { enumerable: false },
         title: { enumerable: false },
         group: { enumerable: false },
         teacher: { enumerable: false },
@@ -130,7 +131,11 @@ export class LessonsService {
       if (!admin) {
         throw new BadRequestException('Invalid token');
       }
-      await this.lessonModel.findByIdAndUpdate(id, { admin, ...dto });
+      await this.lessonModel.findByIdAndUpdate(id, {
+        admin,
+        ...dto,
+        pass: false,
+      });
       return { message: 'Lesson comment added' };
     } catch (error) {
       throw new BadRequestException(error.message);
