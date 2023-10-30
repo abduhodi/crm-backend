@@ -49,9 +49,13 @@ export class StudentAttendanceService {
   }
 
   async findSingleGroupLessonAttendace(group: string, lesson: string) {
-    return this.studentAttendanceModel
-      .find({ group, lesson })
-      .populate(['student']);
+    try {
+      return this.studentAttendanceModel
+        .find({ group, lesson })
+        .populate(['student']);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   //find all students' attendances in all lessons in one group
@@ -60,56 +64,64 @@ export class StudentAttendanceService {
     page: number,
     limit: number,
   ) {
-    let page1: number;
-    let limit1: number;
-    page1 = +page > 0 ? +page : 1;
-    limit1 = +limit > 0 ? +limit : 30;
-    return await this.studentAttendanceModel.aggregate([
-      { $match: { group } },
-      { $sort: { date: 1 } },
-      {
-        $group: {
-          _id: '$student',
-          attendance: {
-            $push: {
-              lesson: '$_id',
-              participated: '$participated',
-              comment: '$comment',
-              admin: '$admin',
-              date: '$date',
+    try {
+      let page1: number;
+      let limit1: number;
+      page1 = +page > 0 ? +page : 1;
+      limit1 = +limit > 0 ? +limit : 30;
+      return await this.studentAttendanceModel.aggregate([
+        { $match: { group } },
+        { $sort: { date: 1 } },
+        {
+          $group: {
+            _id: '$student',
+            attendance: {
+              $push: {
+                lesson: '$_id',
+                participated: '$participated',
+                comment: '$comment',
+                admin: '$admin',
+                date: '$date',
+              },
             },
           },
         },
-      },
-      { $skip: (page1 - 1) * limit1 },
-      { $limit: limit1 },
-      { $project: { student: '$_id', _id: 0, attendance: 1 } },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'student',
-          foreignField: 'id',
-          as: 'student',
+        { $skip: (page1 - 1) * limit1 },
+        { $limit: limit1 },
+        { $project: { student: '$_id', _id: 0, attendance: 1 } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'student',
+            foreignField: 'id',
+            as: 'student',
+          },
         },
-      },
-      { $unwind: '$student' },
-      {
-        $project: {
-          'student.token': 0,
-          'student.password': 0,
-          'student.start_date': 0,
-          'student.role': 0,
+        { $unwind: '$student' },
+        {
+          $project: {
+            'student.token': 0,
+            'student.password': 0,
+            'student.start_date': 0,
+            'student.role': 0,
+          },
         },
-      },
-    ]);
+      ]);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   //find all students' attendances in one lesson in one group
   async findSingleLessonStudentsAttendace(group: string, lesson: string) {
-    return this.studentAttendanceModel.find({ group, lesson }).populate({
-      path: 'student admin lesson',
-      select: '-token -password -role -start_date',
-    });
+    try {
+      return this.studentAttendanceModel.find({ group, lesson }).populate({
+        path: 'student admin lesson',
+        select: '-token -password -role -start_date',
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   //find all students' attendances in one day in one group
@@ -130,12 +142,16 @@ export class StudentAttendanceService {
     lesson: string,
     student: string,
   ) {
-    return this.studentAttendanceModel
-      .findOne({ group, lesson, student })
-      .populate({
-        path: 'student admin',
-        select: '-token -password -role -start_date',
-      });
+    try {
+      return this.studentAttendanceModel
+        .findOne({ group, lesson, student })
+        .populate({
+          path: 'student admin',
+          select: '-token -password -role -start_date',
+        });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   //update single student's attendance in one lesson in one group
@@ -144,15 +160,19 @@ export class StudentAttendanceService {
     value: UpdateAttendanceDto,
     req: any,
   ) {
-    const admin = req?.user?.id;
-    if (!admin) {
-      throw new BadRequestException('Invalid token');
+    try {
+      const admin = req?.user?.id;
+      if (!admin) {
+        throw new BadRequestException('Invalid token');
+      }
+      await this.studentAttendanceModel.findByIdAndUpdate(id, {
+        ...value,
+        admin,
+      });
+      return { message: 'updated' };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-    await this.studentAttendanceModel.findByIdAndUpdate(id, {
-      ...value,
-      admin,
-    });
-    return { message: 'updated' };
   }
 
   //update all students' attendances in one lesson in one group
