@@ -13,6 +13,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { RolesService } from '../roles/roles.service';
 import { CoursesService } from '../courses/courses.service';
 import { CourseTeachersService } from '../course_teachers/course_teachers.service';
+import { FinanceService } from '../finance/finance.service';
 
 @Injectable()
 export class DirectorService {
@@ -21,6 +22,7 @@ export class DirectorService {
     private readonly roleService: RolesService,
     private readonly courseService: CoursesService,
     private readonly courseTeacherService: CourseTeachersService,
+    private readonly financeService: FinanceService,
   ) {}
 
   //----------------------- CREATE Staff -----------------------------//
@@ -42,13 +44,23 @@ export class DirectorService {
       role: existRole.role.name,
       password: bcrypt.hashSync(createUserDto.phone, 7),
     });
-    if (course) {
-      await this.courseTeacherService.addTeacherToCourse({
-        course,
+    if (existRole?.role?.name === 'teacher') {
+      if (course) {
+        await this.courseTeacherService.addTeacherToCourse({
+          course,
+          teacher: newStaff.id,
+        });
+      }
+      await this.financeService.create({
         teacher: newStaff.id,
+        salary: createUserDto.salary,
       });
     }
-    return { staff: { ...newStaff, password: null, token: null } };
+    const staf = JSON.parse(JSON.stringify(newStaff));
+    delete staf.password;
+    delete staf.token;
+    delete staf._id;
+    return { staff: staf };
   }
 
   async activateAdmin(id: string) {

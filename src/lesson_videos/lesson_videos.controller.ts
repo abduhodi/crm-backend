@@ -11,6 +11,8 @@ import {
   HttpCode,
   UseInterceptors,
   UploadedFile,
+  ValidationPipe,
+  ParseFilePipe,
 } from '@nestjs/common';
 import { LessonVideosService } from './lesson_videos.service';
 import { CreateLessonVideoDto } from './dto/create-lesson_video.dto';
@@ -26,6 +28,8 @@ import { AuthGuard } from '../guards/auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ROLE } from '../enums/role.enum';
 import { FileInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
+import { VideoUploadDto } from './dto/upload-video.dto';
+import { ValidVideoValidator } from '../validators/video.validator';
 
 @ApiBearerAuth()
 @ApiTags('Lesson Videos')
@@ -54,7 +58,15 @@ export class LessonVideosController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'access denied' })
   @HttpCode(HttpStatus.OK)
   @Post('upload')
-  uploadVideo(@Body() dto: CreateLessonVideoDto, @UploadedFile() video: any) {
+  uploadVideo(
+    @Body() dto: CreateLessonVideoDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new ValidVideoValidator({})],
+      }),
+    )
+    video: any,
+  ) {
     return this.lessonVideosService.uploadVideo(dto, video);
   }
 

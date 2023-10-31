@@ -21,6 +21,7 @@ import { RolesModule } from './roles/roles.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { StudentAttendanceModule } from './student_attendance/student_attendance.module';
 import { LessonVideosModule } from './lesson_videos/lesson_videos.module';
+import { FinanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { LessonVideosModule } from './lesson_videos/lesson_videos.module';
     LessonsModule,
     StudentAttendanceModule,
     LessonVideosModule,
+    FinanceModule,
   ],
   controllers: [],
   providers: [],

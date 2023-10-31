@@ -16,6 +16,7 @@ import { GroupStudentsModule } from '../group_students/group_students.module';
 import { GroupTeachersModule } from '../group_teachers/group_teachers.module';
 import { LessonsModule } from '../lessons/lessons.module';
 import { StudentAttendanceModule } from '../student_attendance/student_attendance.module';
+import { FinanceModule } from '../finance/finance.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StudentAttendanceModule } from '../student_attendance/student_attendanc
     forwardRef(() => RolesModule),
     forwardRef(() => LessonsModule),
     forwardRef(() => StudentAttendanceModule),
+    forwardRef(() => FinanceModule),
   ],
   controllers: [DirectorController],
   providers: [DirectorService],

@@ -51,7 +51,7 @@ export class LessonVideosService {
 
   async findOneLessonVideo(id: string) {
     try {
-      if (isValidObjectId(id)) {
+      if (!isValidObjectId(id)) {
         throw new BadRequestException('Invalid Lesson id');
       }
       return this.lessonVideoModel.find({ lesson: id }).populate('lesson');

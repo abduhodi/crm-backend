@@ -56,4 +56,10 @@ export class CreateUserDto {
     required: false,
   })
   course?: string;
+
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
+  salary?: number;
 }
