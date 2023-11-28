@@ -12,7 +12,9 @@ import { CreateFinanceDto } from './dto/create-finance.dto';
 import { UpdateFinanceDto } from './dto/update-finance.dto';
 import { dot } from 'node:test/reporters';
 import { CalculateSalaryDto } from './dto/salary.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Finance')
 @Controller('finance')
 export class FinanceController {
   constructor(private readonly financeService: FinanceService) {}
